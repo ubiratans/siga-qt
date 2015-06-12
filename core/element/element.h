@@ -31,8 +31,8 @@ protected:
   ElementID m_id; //!< Element's identificator
   double m_volume; //!< Volume
 
-  std::string m_name; //!< Element name
   ElementType m_element_type; //!< Element type
+  std::string m_name; //!< Element name
 };
 
 #endif

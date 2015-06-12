@@ -1,0 +1,8 @@
+set(project_name "core_element_unit_test")
+
+file(GLOB HEADERS "*.h")
+file(GLOB SOURCES "*.cpp")
+
+add_executable( ${project_name} ${SOURCES} ${HEADERS} )
+
+target_link_libraries( ${project_name} core_element gmock_main )

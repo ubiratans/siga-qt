@@ -13,7 +13,7 @@
 #include "view/gui/translation_utils.h"
 
 MainScreen::MainScreen(QWidget *parent) {
-  bool ret = TranslationUtils::loadTranslation(QString("pt_BR"));
+  TranslationUtils::loadTranslation(QString("pt_BR"));
 
   m_main_layout = new QVBoxLayout(this);
   m_layout_button = new QHBoxLayout(this);

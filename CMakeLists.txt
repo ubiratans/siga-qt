@@ -1,7 +1,7 @@
 # SIGA QT - MAIN CMAKE FILE
 
 # Specify cmake version compatibility that will be used
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
 
 set(CMAKE_AUTOMOC ON)
 
@@ -67,17 +67,23 @@ else(${CMAKE_BUILD_TYPE} MATCHES "RELEASE" )
     set( LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_LIST_DIR}/Build/Debug/${platform} )
 endif()
 
-# Set C++ compile and specify to use c++11
+# TODO: Set the compiler for windows and mac
+# Set C++ compiler and specify to use c++11
 if(UNIX AND NOT APPLE)
-    set(CMAKE_CXX_COMPILER "g++")
-    set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+        # set compiler and compiler flags
+        set(COMPILER_FLAGS "-std=c++11 -Wall -Wextra")
+        set(CMAKE_CXX_COMPILER CACHE "g++" FORCE)
+        set(CMAKE_CXX_FLAGS "${COMPILER_FLAGS} ${CMAKE_CXX_FLAGS}")
 endif()
 
 # Find QT5 package
 find_package(Qt5 REQUIRED COMPONENTS Widgets Core LinguistTools OpenGL)
 
 # include custom functions
-include(CMakeFunctions.txt)
+include(cmake/functions.cmake)
+
+# Initializing gmock
+include(cmake/gmock_init.cmake)
 
 # Set application version
 include(CMakeProjectVersion.txt)
@@ -87,8 +93,12 @@ configure_file(
     "${PROJECT_SOURCE_DIR}/version.h"
 )
 
-# Add the current directory to the list of paths to search for a file
-include_directories(".")
+# Add the current directory and unit tests directories to the list of paths to search for a file
+include_directories(
+    "."
+    ${GTEST_INCLUDE_DIRS}
+    ${GMOCK_INCLUDE_DIRS}
+)
 
 # Set translation's languages
 set(translation_languages pt_BR en_US de_DE)
@@ -98,7 +108,8 @@ get_target_property(QtLreleaseLocation Qt5::lrelease LOCATION)
 
 # Add subdirectories
 add_subdirectory(core)
-add_subdirectory(unit_testing)
+add_subdirectory(third_party)
+add_subdirectory(unit_tests)
 add_subdirectory(view)
 
 # Generate QM files

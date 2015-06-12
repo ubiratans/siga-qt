@@ -7,6 +7,12 @@
 
 int main(int argc, char *argv[]) {
   QApplication app(argc, argv);
+  int x = 0;
+  long y = 1;
+
+  if (x > y) {
+
+  }
 
   MainScreen *main_screen = new MainScreen();
   main_screen->show();

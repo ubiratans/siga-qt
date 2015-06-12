@@ -1,0 +1,13 @@
+set( project_name "unit_tests")
+
+file(GLOB_RECURSE HEADERS "*.h")
+file(GLOB_RECURSE SOURCES "*.cpp")
+
+set( EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/${project_name} )
+
+# subdirectories
+add_subdirectory(core)
+
+
+add_executable( ${project_name} ${SOURCES} ${HEADERS} )
+target_link_libraries( ${project_name} gmock_main )
