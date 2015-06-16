@@ -2,6 +2,89 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="de_DE">
 <context>
+    <name>CORE_ELEMENT_STRINGS</name>
+    <message>
+        <source>ELEMENT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LINK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NODE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ELEMENT_TYPE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LINK_TYPE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NODE_TYPE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DEMAND_TYPE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LINK_DEFAULT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LINK_PUMPING</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LINK_ROUTING</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LINK_SEPARATOR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NODE_BASIN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NODE_DEMAND</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NODE_JUNCTION</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NODE_LAKE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NODE_RESERVOIR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DEMAND_HUMAN_CONSUME</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DEMAND_ANIMAL_CONSUME</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DEMAND_INDUSTRIAL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DEMAND_IRRIGATION</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CORE_STRINGS</name>
     <message>
         <source>CONTACT</source>

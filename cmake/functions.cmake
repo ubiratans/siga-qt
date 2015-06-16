@@ -33,3 +33,34 @@ function (add_gmock_test target)
 
     add_test( ${target} ${target} )
 endfunction()
+
+function(wrap_qt_ui_files out_files name)
+    set(ui_files ${out_files})
+    set(ui_options ${_WRAP_UI_OPTIONS})
+
+    cmake_parse_arguments(_WRAP_UI "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    set(ui_files ${_WRAP_UI_UNPARSED_ARGUMENTS})
+    set(ui_options ${_WRAP_UI_OPTIONS})
+
+    foreach(it ${ui_files})
+        get_filename_component(output ${it} NAME_WE)
+        get_filename_component(input ${it} ABSOLUTE)
+
+        set(output_file "${CMAKE_CURRENT_SOURCE_DIR}/${output}_ui.h")
+
+
+        #message(STATUS "OUTPUT FILE: ${output_file}")
+        #message(STATUS "INPUT: ${input}")
+        #message(STATUS "UIC LOCATION: ${QtUIC_Location}")
+
+        add_custom_command(OUTPUT ${output_file}
+          COMMAND ${QtUIC_Location}
+          ARGS ${ui_options} -o ${output_file} ${input}
+          MAIN_DEPENDENCY ${input} VERBATIM)
+
+        list(APPEND ${out_files} ${output_file})
+    endforeach()
+
+    set(${out_files} ${${out_files}} PARENT_SCOPE)
+    add_custom_target("${name}_ui_headers_generation" ALL DEPENDS ${${out_files}})
+endfunction()

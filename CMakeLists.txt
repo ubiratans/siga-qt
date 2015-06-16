@@ -3,11 +3,11 @@
 # Specify cmake version compatibility that will be used
 cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
 
-set(CMAKE_AUTOMOC ON)
-
 # Set project and it's name
 set(PROJECT_NAME "siga")
 project(${PROJECT_NAME})
+
+set(CMAKE_AUTOMOC ON)
 
 if(NOT DEFINED m64)
     message(FATAL_ERROR "ERROR: System architeture is mandatory! Use -Dm64=TRUE/FALSE")
@@ -105,6 +105,7 @@ set(translation_languages pt_BR en_US de_DE)
 
 get_target_property(QtLupdateLocation Qt5::lupdate LOCATION)
 get_target_property(QtLreleaseLocation Qt5::lrelease LOCATION)
+get_target_property(QtUIC_Location Qt5::uic LOCATION)
 
 # Add subdirectories
 add_subdirectory(core)
