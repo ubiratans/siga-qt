@@ -53,9 +53,6 @@ protected:
 
   void stealLinks(Node &node);
 
-  //!< This method SHALL set the appropriate value of m_type!!
-  virtual void initializeNodeType() = 0;
-
   double m_latitude;
   double m_longitude;
   double m_area;

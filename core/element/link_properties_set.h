@@ -8,6 +8,7 @@ class Link;
 class LinkPropertiesSet : public ElementPropertiesSet {
 public:
   LinkPropertiesSet(Link &link);
+  virtual ~LinkPropertiesSet();
 
   const std::map< std::string, ElementPropertyType >& mandatoryProperties();
 

@@ -8,6 +8,7 @@ class Node;
 class NodePropertiesSet : public ElementPropertiesSet {
 public:
   NodePropertiesSet(Node &node);
+  virtual ~NodePropertiesSet();
 
   const std::map< std::string, ElementPropertyType >& mandatoryProperties();
 

@@ -59,11 +59,8 @@ public:
   uint32_t countNodes();
 
 private:
-  Node* instantiateNode(NodeType type, std::string name, double latitude, double longitude);
-  Node* instantiateNode(NodeType type, Node &base_node);
-
-  bool removeNode(Node *node); //!< removes an existing node
-  bool removeLink(Link *link); //!< returns true if the link exists and was removed, or false if not
+  bool removeNode(ElementID id); //!< removes an existing node
+  bool removeLink(ElementID id); //!< returns true if the link exists and was removed, or false if not
 
   void setLinkID(Link &link, ElementID new_id); //!< Modifies the link id - This method SHALL only be invoked by the setElementID()
   void setNodeID(Node &node, ElementID new_id); //!< Modifies the node id - This method SHALL only be invoked by the setElementID()

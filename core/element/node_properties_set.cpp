@@ -13,6 +13,10 @@ NodePropertiesSet::NodePropertiesSet(Node &node) : m_node(&node) {
 
 }
 
+NodePropertiesSet::~NodePropertiesSet() {
+
+}
+
 const std::map<std::string, ElementPropertyType>& NodePropertiesSet::mandatoryProperties() {
   if (m_node->type() == NodeType::Demand) {
     return m_demand_mandatory_properties_map;
