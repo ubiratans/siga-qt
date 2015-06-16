@@ -35,7 +35,7 @@ bool Node::setType(NodeType new_type) {
   * link -> the link between the two nodes
 !*/
 bool Node::insertIngoingLink(ElementID id, Link &link) {
-  bool ret = hasIngoingNode(id);
+  bool ret = !hasIngoingNode(id);
 
   if (ret) {
     m_ingoing_links_map[id] = &link;
