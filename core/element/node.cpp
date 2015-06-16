@@ -1,11 +1,33 @@
 #include "core/element/node.h"
 
-Node::Node(ElementID id, std::string name, double latitude, double longitude) :
-Element(id, name, 0.0, ElementType::Node), m_latitude(latitude), m_longitude(longitude), m_area(0.0)
+#include "core/element/node_properties_set.h"
+
+Node::Node(ElementID id, std::string name, NodeType type, double latitude, double longitude) :
+Element(id, name, 0.0, ElementType::Node), m_latitude(latitude), m_longitude(longitude), m_area(0.0), m_type(type)
 {
+  m_properties_set = new NodePropertiesSet(*this);
+}
+
+Node::Node(Node &node)
+  : Element(node.id(), node.name(), node.volume(), ElementType::Node),
+    m_latitude(node.latitude()), m_longitude(node.longitude()), m_area(node.area()),
+    m_ingoing_links_map(node.ingoingLinks()), m_outgoing_links_map(node.outgoingLinks()), m_type(node.type())
+{
+  m_properties_set = new NodePropertiesSet(*this);
 }
 
 Node::~Node() {
+  delete m_properties_set;
+}
+
+bool Node::setType(NodeType new_type) {
+  if (m_type != new_type) {
+    m_type = new_type;
+
+    return true;
+  }
+
+  return false;
 }
 
 /*!
@@ -80,6 +102,10 @@ std::map< ElementID, Link* >& Node::ingoingLinks() {
 
 std::map<ElementID, Link* >& Node::outgoingLinks() {
   return m_outgoing_links_map;
+}
+
+NodeType Node::type() {
+  return m_type;
 }
 
 

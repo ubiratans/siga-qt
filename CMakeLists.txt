@@ -60,11 +60,11 @@ message(STATUS "> Platform: ${platform}\n")
 
 # Set the library and executable directories for the binary tree
 if(${CMAKE_BUILD_TYPE} MATCHES "RELEASE" )
-    set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_LIST_DIR}/Build/Release/${platform} )
-    set( LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_LIST_DIR}/Build/Release/${platform} )
+    set( EXECUTABLE_OUTPUT_PATH" ${CMAKE_CURRENT_LIST_DIR}/Build/Release/${platform}" )
+    set( LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_LIST_DIR}/Build/Release/${platform}/lib" )
 else(${CMAKE_BUILD_TYPE} MATCHES "RELEASE" )
-    set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_LIST_DIR}/Build/Debug/${platform} )
-    set( LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_LIST_DIR}/Build/Debug/${platform} )
+    set( EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_LIST_DIR}/Build/Debug/${platform}" )
+    set( LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_LIST_DIR}/Build/Debug/${platform}/lib" )
 endif()
 
 # TODO: Set the compiler for windows and mac
@@ -110,6 +110,7 @@ get_target_property(QtLreleaseLocation Qt5::lrelease LOCATION)
 add_subdirectory(core)
 add_subdirectory(third_party)
 add_subdirectory(unit_tests)
+add_subdirectory(utils)
 add_subdirectory(view)
 
 # Generate QM files

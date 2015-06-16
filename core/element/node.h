@@ -9,14 +9,13 @@
 class Link;
 
 class Node : public Element {
-  friend class NetworkNodeHandler;
-  friend class NetworkLinkHandler;
+  friend class ElementManager;
 
 public:
   std::map< ElementID, Link* >& ingoingLinks(); //!< get links up map - ElementID (id of the node linked with)
   std::map< ElementID, Link* >& outgoingLinks(); //!< get links down map - ElementID (id of the node linked with)
 
-  virtual NodeType type() = 0;
+  NodeType type();
 
   double longitude(); //!< get longitude - longitude is related to the x-axis
   void setLongitude(double value);
@@ -40,8 +39,11 @@ public:
   bool hasOutgoingNode(ElementID node_id);
 
 protected:
-  Node(ElementID id, std::string name, double latitude = 0.0, double longitude = 0.0);
+  Node(ElementID id, std::string name, NodeType type, double latitude = 0.0, double longitude = 0.0);
+  Node(Node &node);
   virtual ~Node();
+
+  bool setType(NodeType new_type);
 
   bool insertIngoingLink(ElementID id, Link &link);
   bool insertOutgoingLink(ElementID id, Link &link);
@@ -51,9 +53,13 @@ protected:
 
   void stealLinks(Node &node);
 
+  //!< This method SHALL set the appropriate value of m_type!!
+  virtual void initializeNodeType() = 0;
+
   double m_latitude;
   double m_longitude;
   double m_area;
+  NodeType m_type;
 
   /**
   * Links acima do no

@@ -17,7 +17,14 @@ enum class ElementType {
   Node
 };
 
-enum class DemandType {
+enum class ElementPropertyType {
+  Bool = 0,
+  Int,
+  Double,
+  String
+};
+
+enum class DemandType : int {
   AnimalConsume,
   HumanConsume,
   Industrial,
