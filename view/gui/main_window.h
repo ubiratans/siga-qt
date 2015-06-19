@@ -8,14 +8,22 @@ class MainWindow;
 }
 
 class MainWindow : public QMainWindow {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+  explicit MainWindow(QWidget *parent = 0);
+  ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
+  void createMenu();
+  void init();
+
+  Ui::MainWindow *m_ui;
+
+  QMenu *m_menu_file;
+  QMenu *m_menu_edit;
+  QMenu *m_menu_tools;
+  QMenu *m_menu_view;
 };
 
 #endif

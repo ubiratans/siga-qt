@@ -77,7 +77,7 @@ if(UNIX AND NOT APPLE)
 endif()
 
 # Find QT5 package
-find_package(Qt5 REQUIRED COMPONENTS Widgets Core LinguistTools OpenGL)
+find_package(Qt5 REQUIRED COMPONENTS Widgets Gui Core LinguistTools OpenGL)
 
 # include custom functions
 include(cmake/functions.cmake)
@@ -109,6 +109,7 @@ get_target_property(QtUIC_Location Qt5::uic LOCATION)
 
 # Add subdirectories
 add_subdirectory(core)
+add_subdirectory(front)
 add_subdirectory(third_party)
 add_subdirectory(unit_tests)
 add_subdirectory(utils)
