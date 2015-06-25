@@ -1,32 +1,57 @@
 #include "view/gui/draw_element/draw_primitive/draw_triangle.h"
 
-DrawTriangle::DrawTriangle(long x, long y, QColor color, QColor border_color)
+DrawTriangle::DrawTriangle(float x, float y, QColor color, QColor border_color)
   : DrawPrimitive(x, y, color, border_color)
 {
   m_gl_primitive = GL_TRIANGLES;
-  m_gl_border_primitive = GL_TRIANGLE_STRIP;
-  m_vertex_vec.reserve(3);
+  m_gl_border_primitive = GL_TRIANGLES;
+  m_vertex_vec.resize(3);
+  m_border_vertex_vec.resize(3);
+
+  calculateVertices();
 }
 
-bool DrawTriangle::hitTest(long screen_x, long screen_y) {
-  return false;
+DrawTriangle::~DrawTriangle() {
+
 }
 
 void DrawTriangle::calculateVertices() {
   long inc = 1;
 
-  long min_x = x() - inc;
-  long max_x = x() + inc;
-  long min_y = y() - inc;
-  long max_y = y() + inc;
+  float min_x = -1 * inc;
+  float max_x = inc;
+  float min_y = min_x;
+  float max_y = inc;
 
-  long vertices[3][2] = {
+  float vertices[3][2] = {
     { min_x, min_y },
     { x(), max_y },
     { max_x, min_y}
   };
 
-  m_vertex_vec[0] = std::make_pair(vertices[0][0], vertices[0][1]);
-  m_vertex_vec[1] = std::make_pair(vertices[1][0], vertices[1][1]);
-  m_vertex_vec[2] = std::make_pair(vertices[2][0], vertices[2][1]);
+  float border_vertices[3][2] = {
+    { --min_x, --min_y },
+    { x(), ++max_y },
+    { ++max_x, min_y}
+  };
+
+  m_vertex_vec[0].setX(vertices[0][0]);
+  m_vertex_vec[0].setY(vertices[0][1]);
+  m_vertex_vec[0].setZ(0.0);
+  m_vertex_vec[1].setX(vertices[1][0]);
+  m_vertex_vec[1].setY(vertices[1][1]);
+  m_vertex_vec[1].setZ(0.0);
+  m_vertex_vec[2].setX(vertices[2][0]);
+  m_vertex_vec[2].setY(vertices[2][1]);
+  m_vertex_vec[2].setZ(0.0);
+
+  m_border_vertex_vec[0].setX(border_vertices[0][0]);
+  m_border_vertex_vec[0].setY(border_vertices[0][1]);
+  m_border_vertex_vec[0].setZ(0.0);
+  m_border_vertex_vec[1].setX(border_vertices[1][0]);
+  m_border_vertex_vec[1].setY(border_vertices[1][1]);
+  m_border_vertex_vec[1].setZ(0.0);
+  m_border_vertex_vec[2].setX(border_vertices[2][0]);
+  m_border_vertex_vec[2].setY(border_vertices[2][1]);
+  m_border_vertex_vec[2].setZ(0.0);
 }

@@ -5,10 +5,8 @@
 
 class DrawTriangle : public DrawPrimitive {
 public:
-  DrawTriangle(long x, long y, QColor color, QColor border_color);
+  DrawTriangle(float x, float y, QColor color, QColor border_color);
   virtual ~DrawTriangle();
-
-  virtual bool hitTest(long screen_x, long screen_y);
 
 protected:
   void calculateVertices();

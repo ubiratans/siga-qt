@@ -3,6 +3,7 @@
 
 #include "view/gui/main_window_strings.h"
 #include "view/gui/translation_utils.h"
+#include "utils/coordinate_system/coordinate_system_utils.h"
 
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent),
@@ -10,6 +11,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
   m_ui->setupUi(this);
   init();
+}
+
+MainWindow::~MainWindow() {
+  delete m_ui;
 }
 
 void MainWindow::createMenu() {
@@ -25,8 +30,10 @@ void MainWindow::init() {
 
   setWindowTitle(TranslationUtils::tr(kTkMainWindowStringWindowTitle));
   createMenu();
+  createCanvas();
 }
 
-MainWindow::~MainWindow() {
-  delete m_ui;
+void MainWindow::createCanvas() {
+  m_main_canvas = new MainCanvas(*(CoordinateSystemUtils::instance().coordinateSystem(CoordinateSystemID::WGS_84)), this);
+  setCentralWidget(m_main_canvas);
 }

@@ -14,6 +14,11 @@ public:
   double left();
   double right();
 
+  double width();
+  double height();
+
+  virtual std::pair< double, double > origin() = 0;
+
 protected:
   virtual void initialize() = 0;
 

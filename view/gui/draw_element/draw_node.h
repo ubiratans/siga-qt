@@ -5,13 +5,13 @@
 
 class DrawNode : public DrawElement {
 public:
-  DrawNode(ElementID id, NodeType node_type, long x, long y, double scale = 1.0);
+  DrawNode(ElementID id, NodeType node_type, float x, float y, double scale = 1.0);
 
 protected:
   void initializePrimitives();
 
-  long m_x;
-  long m_y;
+  float m_x;
+  float m_y;
   NodeType m_type;
 };
 

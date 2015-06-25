@@ -4,10 +4,11 @@
 #include <QColor>
 #include <QString>
 #include <QtOpenGL>
+#include <QVector2D>
 
 class DrawPrimitive {
 public:
-  DrawPrimitive(long x, long y, QColor &color, QColor &border_color, QString label = "");
+  DrawPrimitive(float x, float y, QColor &color, QColor &border_color, QString label = "");
   virtual ~DrawPrimitive();
 
   QString label();
@@ -24,13 +25,18 @@ public:
   GLenum glPrimitive();
   GLenum glBorderPrimitive();
 
-  long x();
-  void setX(long x);
+  virtual bool containBorder();
+  virtual bool enableBorder(bool enable);
 
-  long y();
-  void setY(long y);
+  const QVector< QVector3D >& borderVertexVector();
 
-  void setPosition(long x, long y);
+  float x();
+  void setX(float x);
+
+  float y();
+  void setY(float y);
+
+  void setPosition(float x, float y);
 
   double scale();
   void setScale(double scale);
@@ -38,27 +44,30 @@ public:
   double rotation();
   void setRotation(double angle_degree);
 
-  virtual bool hitTest(long screen_x, long screen_y) = 0;
-
-  const std::vector< std::pair< long, long > >& vertexVector();
+  const QVector< QVector3D >& vertexVector();
 
 protected:
   virtual void calculateVertices() = 0;
 
-  std::vector< std::pair< long, long > > m_vertex_vec;
+  QVector< QVector3D > m_vertex_vec;
+  QVector< QVector3D > m_border_vertex_vec;
+
   GLenum m_gl_primitive;
   GLenum m_gl_border_primitive;
 
-  long m_x;
-  long m_y;
+  float m_x;
+  float m_y;
 
   double m_scale;
   double m_rotation_angle_degree;
+
+  double m_last_zoom_factor;
 
   QColor m_color;
   QColor m_border_color;
 
   QString m_label;
+  bool m_enable_border;
 };
 
 #endif

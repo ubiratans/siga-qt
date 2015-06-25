@@ -1,7 +1,8 @@
 #include "view/gui/draw_element/draw_primitive/draw_primitive.h"
 
-DrawPrimitive::DrawPrimitive(long x, long y, QColor &color, QColor &border_color, QString label)
-  : m_x(x), m_y(y), m_color(color), m_border_color(border_color), m_label(label), m_scale(1.0), m_rotation_angle_degree(0.0)
+DrawPrimitive::DrawPrimitive(float x, float y, QColor &color, QColor &border_color, QString label)
+  : m_x(x), m_y(y), m_color(color), m_border_color(border_color), m_label(label),
+    m_scale(1.0), m_rotation_angle_degree(0.0), m_enable_border(true)
 {
 
 }
@@ -49,27 +50,39 @@ GLenum DrawPrimitive::glBorderPrimitive() {
   return m_gl_border_primitive;
 }
 
-long DrawPrimitive::x() {
+bool DrawPrimitive::containBorder() {
+  return m_enable_border;
+}
+
+bool DrawPrimitive::enableBorder(bool enable) {
+  m_enable_border = enable;
+}
+
+const QVector<QVector3D> &DrawPrimitive::borderVertexVector() {
+  return m_border_vertex_vec;
+}
+
+float DrawPrimitive::x() {
   return m_x;
 }
 
-void DrawPrimitive::setX(long x) {
+void DrawPrimitive::setX(float x) {
   m_x = x;
 
   calculateVertices();
 }
 
-long DrawPrimitive::y() {
+float DrawPrimitive::y() {
   return m_y;
 }
 
-void DrawPrimitive::setY(long y) {
+void DrawPrimitive::setY(float y) {
   m_y = y;
 
   calculateVertices();
 }
 
-void DrawPrimitive::setPosition(long x, long y) {
+void DrawPrimitive::setPosition(float x, float y) {
   m_x = x;
   m_y = y;
 
@@ -92,6 +105,6 @@ void DrawPrimitive::setRotation(double angle_degree) {
   m_rotation_angle_degree = angle_degree;
 }
 
-const std::vector<std::pair<long, long> > &DrawPrimitive::vertexVector() {
+const QVector<QVector3D> &DrawPrimitive::vertexVector() {
   return m_vertex_vec;
 }

@@ -13,7 +13,7 @@ add_subdirectory(draw_element)
 
 add_executable(${project_name} ${SOURCES} ${HEADERS} ${FORM_HEADERS})
 
-target_link_libraries(${project_name} Qt5::Core Qt5::Widgets core)
+target_link_libraries(${project_name} Qt5::Core Qt5::Widgets core view_canvas utils_coordinate_system)
 
 # generate ts files
 generateTranslations()

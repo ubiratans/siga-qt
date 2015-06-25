@@ -4,6 +4,8 @@
 #include "core/coordinate_system/coordinate_system.h"
 
 class Wgs84 : public CoordinateSystem {
+public:
+  std::pair< double, double > origin();
 protected:
   void initialize();
 };
