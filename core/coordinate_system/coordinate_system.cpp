@@ -1,7 +1,6 @@
 #include "core/coordinate_system/coordinate_system.h"
 
 CoordinateSystem::CoordinateSystem() {
-  initialize();
 }
 
 std::string CoordinateSystem::name() {

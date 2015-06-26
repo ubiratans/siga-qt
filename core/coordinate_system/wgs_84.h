@@ -5,7 +5,10 @@
 
 class Wgs84 : public CoordinateSystem {
 public:
+  Wgs84();
+
   std::pair< double, double > origin();
+
 protected:
   void initialize();
 };

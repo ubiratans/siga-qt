@@ -1,5 +1,9 @@
 #include "core/coordinate_system/wgs_84.h"
 
+Wgs84::Wgs84() {
+  initialize();
+}
+
 std::pair<double, double> Wgs84::origin() {
   double x = 0.0;
   double y = 0.0;

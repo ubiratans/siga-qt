@@ -9,11 +9,14 @@
 #include "view/gui/canvas/shaders/vertex_shader.h"
 
 MainCanvas::MainCanvas(/*CanvasElementManager &manager,*/CoordinateSystem &coord_system, QWidget *parent)
-  : QGLWidget(QGLFormat(QGL::SampleBuffers), parent), m_coordinate_system(&coord_system)
+  : QGLWidget(QGLFormat(QGL::DoubleBuffer), parent), m_coordinate_system(&coord_system)
 {
-  m_pos_x = m_pos_y = 0.0;
+  m_pos_x = -30.0;
+  m_pos_y = -15.0;
   m_max_width = m_coordinate_system->width() * 10;
   m_max_height = m_coordinate_system->height() * 10;
+  m_zoom = 1.0;
+  m_projection_matrix.setToIdentity();
 }
 
 MainCanvas::~MainCanvas() {
@@ -28,9 +31,6 @@ QGLShaderProgram& MainCanvas::shaderProgram() {
 }
 
 void MainCanvas::initializeGL() {
-  //glEnable(GL_DEPTH_TEST);
-  //glEnable(GL_CULL_FACE);
-
   bool load_shaders = m_shader_program.addShaderFromSourceCode(QGLShader::Vertex, kCanvasVertexShader)
                      && m_shader_program.addShaderFromSourceCode(QGLShader::Fragment, kCanvasFragmentShader)
                       && m_shader_program.link();
@@ -42,12 +42,11 @@ void MainCanvas::initializeGL() {
 
 void MainCanvas::paintGL() {
   glClear(GL_COLOR_BUFFER_BIT);
-  m_projection_matrix.setToIdentity();
 
   bool x = m_shader_program.bind();
   m_shader_program.setUniformValue("projection_matrix", m_projection_matrix);
 
-  DrawNode *node = new DrawNode(0, NodeType::Reservoir, 0.0, 0.0, 0.25);
+  DrawNode *node = new DrawNode(0, NodeType::Reservoir, 0.0, 0.0, 1.0);
   drawElement(*node);
 
   m_shader_program.release();
@@ -60,12 +59,8 @@ void MainCanvas::paintGL() {
 void MainCanvas::resizeGL(int width, int height) {
   m_projection_matrix.setToIdentity();
 
-  double width_prop = width / (m_max_width);
-  double height_prop = height / (m_max_height);
-  double right = m_pos_x + m_coordinate_system->width() * width_prop / (m_max_width * m_zoom);
-  double top = m_pos_y + m_coordinate_system->height() * height_prop / (m_max_height * m_zoom);
-
-
+  double right = m_pos_x + (m_coordinate_system->width() / (m_max_width * m_zoom)) * (width - 1);
+  double top = m_pos_y + (m_coordinate_system->height() / (m_max_height * m_zoom)) * (height - 1);
 
   /*glOrtho(
               m_pos_x,
@@ -76,6 +71,7 @@ void MainCanvas::resizeGL(int width, int height) {
               1.0
           );*/
 
+  //m_projection_matrix.translate(5.0, 0.5, 0.0);
   m_projection_matrix.ortho(m_pos_x, right, m_pos_y, top, 0.0, 1.0);
 
   glViewport(0, 0, width-1, height-1);
@@ -99,14 +95,19 @@ void MainCanvas::drawPrimitive(DrawPrimitive &primitive) {
   bool scale = (primitive.scale() != 1.0? true: false);
 
   if (rotate) {
+    model_view_matrix.translate(primitive.x(), primitive.y(), 0.0);
     model_view_matrix.rotate(primitive.rotation(), 0.0, 0.0, 1.0);
+    model_view_matrix.translate(-primitive.x(), -primitive.y(), 0.0);
   }
 
   if (scale) {
+    model_view_matrix.translate(-primitive.x(), -primitive.y(), 0.0);
     model_view_matrix.scale(primitive.scale(), primitive.scale(), 1.0);
+    model_view_matrix.translate(primitive.x(), primitive.y(), 0.0);
   }
 
   model_view_matrix.translate(primitive.x(), primitive.y(), 0.0);
+
   m_shader_program.setUniformValue("model_view_matrix", model_view_matrix);
 
   if (primitive.containBorder()) {

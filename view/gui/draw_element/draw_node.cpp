@@ -11,7 +11,7 @@ DrawNode::DrawNode(ElementID id, NodeType node_type, float x, float y, double sc
 void DrawNode::initializePrimitives() {
   DrawTriangle *triangle = new DrawTriangle(m_x, m_y, QColor(Qt::blue), QColor(Qt::black));
   triangle->setScale(m_scale);
-  triangle->setRotation(180.0);
+  triangle->setRotation(90.0);
 
   m_primitives_vector.push_back(triangle);
 }
