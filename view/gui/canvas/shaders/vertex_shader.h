@@ -11,7 +11,7 @@ const QString kCanvasVertexShader =
   in vec4 vertex; \n\
   \n\
   void main(void) { \n\
-    mat4 matrix = model_view_matrix * projection_matrix;\n\
+    mat4 matrix = projection_matrix * model_view_matrix;\n\
     gl_Position = matrix  * vertex; \n\
   }";
 

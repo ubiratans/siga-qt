@@ -9,7 +9,7 @@ public:
   virtual ~DrawTriangle();
 
 protected:
-  void calculateVertices();
+  void calculateVertices(double screen_world_width_proportion, double screen_world_height_proportion);
 };
 
 #endif

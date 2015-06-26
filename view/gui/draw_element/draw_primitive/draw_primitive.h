@@ -46,8 +46,14 @@ public:
 
   const QVector< QVector3D >& vertexVector();
 
+  void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion);
+
 protected:
-  virtual void calculateVertices() = 0;
+  void calculateVertices();
+  virtual void calculateVertices(double screen_world_width_proportion, double screen_world_height_proportion) = 0;
+
+  double m_last_width_proportion;
+  double m_last_height_proportion;
 
   QVector< QVector3D > m_vertex_vec;
   QVector< QVector3D > m_border_vertex_vec;

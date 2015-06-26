@@ -7,21 +7,30 @@ DrawTriangle::DrawTriangle(float x, float y, QColor color, QColor border_color)
   m_gl_border_primitive = GL_TRIANGLES;
   m_vertex_vec.resize(3);
   m_border_vertex_vec.resize(3);
-
-  calculateVertices();
 }
 
 DrawTriangle::~DrawTriangle() {
 
 }
 
-void DrawTriangle::calculateVertices() {
-  long inc = 1;
+void DrawTriangle::calculateVertices(double screen_world_width_proportion, double screen_world_height_proportion) {
+  long inc = 8;
 
-  float min_x = -1 * inc;
-  float max_x = inc;
-  float min_y = min_x;
-  float max_y = inc;
+  float y_inc = inc * screen_world_height_proportion;
+  float x_inc = inc * screen_world_width_proportion;
+
+  float min_x = -1 * x_inc;
+  float max_x = x_inc;
+  float min_y = -1 * y_inc;
+  float max_y = y_inc;
+
+  y_inc = ++inc * screen_world_height_proportion;
+  x_inc = inc * screen_world_width_proportion;
+
+  float border_min_x = -1 * x_inc;
+  float border_max_x = x_inc;
+  float border_min_y = -1 * y_inc;
+  float border_max_y = y_inc;
 
   float vertices[3][2] = {
     { min_x, min_y },
@@ -30,9 +39,9 @@ void DrawTriangle::calculateVertices() {
   };
 
   float border_vertices[3][2] = {
-    { --min_x, --min_y },
-    { x(), ++max_y },
-    { ++max_x, min_y}
+    { border_min_x, border_min_y },
+    { x(), border_max_y },
+    { border_max_x, border_min_y}
   };
 
   m_vertex_vec[0].setX(vertices[0][0]);

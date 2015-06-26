@@ -6,6 +6,7 @@
 class DrawNode : public DrawElement {
 public:
   DrawNode(ElementID id, NodeType node_type, float x, float y, double scale = 1.0);
+  void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion);
 
 protected:
   void initializePrimitives();

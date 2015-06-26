@@ -46,7 +46,9 @@ void MainCanvas::paintGL() {
   bool x = m_shader_program.bind();
   m_shader_program.setUniformValue("projection_matrix", m_projection_matrix);
 
-  DrawNode *node = new DrawNode(0, NodeType::Reservoir, 0.0, 0.0, 1.0);
+  DrawNode *node = new DrawNode(0, NodeType::Reservoir, 0.0, 0.0, 1.5);
+  node->computeVertices((m_coordinate_system->width() / (m_max_width * m_zoom)), (m_coordinate_system->height() / (m_max_height * m_zoom)));
+
   drawElement(*node);
 
   m_shader_program.release();
