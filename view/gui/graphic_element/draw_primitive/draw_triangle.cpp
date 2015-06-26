@@ -19,18 +19,20 @@ void DrawTriangle::computeVertices(double screen_world_width_proportion, double 
   float y_inc = inc * screen_world_height_proportion;
   float x_inc = inc * screen_world_width_proportion;
 
-  float min_x = -1 * x_inc;
-  float max_x = x_inc;
-  float min_y = -1 * y_inc;
-  float max_y = y_inc;
+  float min_x = -1 * x_inc + x();
+  float max_x = x_inc + x();
+
+  float min_y = -1 * y_inc + y();
+  float max_y = y_inc + y();
 
   y_inc = ++inc * screen_world_height_proportion;
   x_inc = inc * screen_world_width_proportion;
 
-  float border_min_x = -1 * x_inc;
-  float border_max_x = x_inc;
-  float border_min_y = -1 * y_inc;
-  float border_max_y = y_inc;
+  float border_min_x = -1 * x_inc + x();
+  float border_max_x = x_inc + x();
+
+  float border_min_y = -1 * y_inc + y();
+  float border_max_y = y_inc + y();
 
   float vertices[3][2] = {
     { min_x, min_y },

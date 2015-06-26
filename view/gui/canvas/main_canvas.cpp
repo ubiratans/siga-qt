@@ -32,8 +32,8 @@ QGLShaderProgram& MainCanvas::shaderProgram() {
 
 void MainCanvas::initializeGL() {
   bool load_shaders = m_shader_program.addShaderFromSourceCode(QGLShader::Vertex, kCanvasVertexShader)
-                     && m_shader_program.addShaderFromSourceCode(QGLShader::Fragment, kCanvasFragmentShader)
-                      && m_shader_program.link();
+      && m_shader_program.addShaderFromSourceCode(QGLShader::Fragment, kCanvasFragmentShader)
+      && m_shader_program.link();
 
   if (load_shaders) {
     qglClearColor(QColor(Qt::white));
@@ -49,18 +49,32 @@ void MainCanvas::paintGL() {
   GraphicNode *node = new GraphicNode(
         0,
         GraphicNodeStruct(NodeType::Reservoir,
-                             0.0,
-                             0.0,
-                             m_coordinate_system->width() / (m_max_width * m_zoom),
-                             m_coordinate_system->height() / (m_max_height * m_zoom),
-                             0.0,
-                             1.0
-                             )
+                          0.0,
+                          0.0,
+                          m_coordinate_system->width() / (m_max_width * m_zoom),
+                          m_coordinate_system->height() / (m_max_height * m_zoom),
+                          0.0,
+                          1.0
+                          )
         );
 
-      node->computeVertices();
+  GraphicNode *node2 = new GraphicNode(
+        0,
+        GraphicNodeStruct(NodeType::Reservoir,
+                          1.25,
+                          0.0,
+                          m_coordinate_system->width() / (m_max_width * m_zoom),
+                          m_coordinate_system->height() / (m_max_height * m_zoom),
+                          0.0,
+                          1.0
+                          )
+        );
+
+  //node->computeVertices();
+  node2->computeVertices();
 
   drawElement(*node);
+  drawElement(*node2);
 
   m_shader_program.release();
 
@@ -74,15 +88,6 @@ void MainCanvas::resizeGL(int width, int height) {
 
   double right = m_pos_x + (m_coordinate_system->width() / (m_max_width * m_zoom)) * (width - 1);
   double top = m_pos_y + (m_coordinate_system->height() / (m_max_height * m_zoom)) * (height - 1);
-
-  /*glOrtho(
-              m_pos_x,
-              right,
-              m_pos_y,
-              top,
-              0.0,
-              1.0
-          );*/
 
   //m_projection_matrix.translate(5.0, 0.5, 0.0);
   m_projection_matrix.ortho(m_pos_x, right, m_pos_y, top, 0.0, 1.0);
@@ -104,8 +109,8 @@ void MainCanvas::drawPrimitive(DrawPrimitive &primitive, double rotation_angle, 
   m_shader_program.setAttributeArray("vertex", primitive.vertexVector().constData());
   m_shader_program.enableAttributeArray("vertex");
 
-  bool execute_rotation = (int(primitive.rotation() + rotation_angle / 360) * 360 == primitive.rotation()? false: true);
-  bool execute_scale = (primitive.scale() + scale != 1.0? true: false);
+  bool execute_rotation = (int((primitive.rotation() + rotation_angle) / 360) * 360.0 == primitive.rotation() + rotation_angle? false: true);
+  bool execute_scale = (primitive.scale() * scale != 1.0? true: false);
 
   if (execute_rotation) {
     model_view_matrix.translate(primitive.x(), primitive.y(), 0.0);
@@ -133,7 +138,7 @@ void MainCanvas::drawPrimitive(DrawPrimitive &primitive, double rotation_angle, 
     glGetFloatv(GL_LINE_WIDTH, &line_width);
 
     // TODO: Add the border_width to DrawPrimitive
-    glLineWidth(line_width + 0.5);
+    glLineWidth(line_width + 1.0);
 
     m_shader_program.setUniformValue("color", primitive.borderColor());
     glDrawArrays(primitive.glBorderPrimitive(), 0, primitive.borderVertexVector().size());
