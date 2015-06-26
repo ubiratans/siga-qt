@@ -4,7 +4,7 @@
 
 #include "core/coordinate_system/wgs_84.h"
 #include "view/gui/canvas/painter.h"
-#include "view/gui/draw_element/draw_node.h"
+#include "view/gui/graphic_element/graphic_node.h"
 #include "view/gui/canvas/shaders/fragment_shader.h"
 #include "view/gui/canvas/shaders/vertex_shader.h"
 
@@ -46,8 +46,19 @@ void MainCanvas::paintGL() {
   bool x = m_shader_program.bind();
   m_shader_program.setUniformValue("projection_matrix", m_projection_matrix);
 
-  DrawNode *node = new DrawNode(0, NodeType::Reservoir, 0.0, 0.0, 1.5);
-  node->computeVertices((m_coordinate_system->width() / (m_max_width * m_zoom)), (m_coordinate_system->height() / (m_max_height * m_zoom)));
+  GraphicNode *node = new GraphicNode(
+        0,
+        GraphicNodeStruct(NodeType::Reservoir,
+                             0.0,
+                             0.0,
+                             m_coordinate_system->width() / (m_max_width * m_zoom),
+                             m_coordinate_system->height() / (m_max_height * m_zoom),
+                             0.0,
+                             1.0
+                             )
+        );
+
+      node->computeVertices();
 
   drawElement(*node);
 
@@ -80,31 +91,31 @@ void MainCanvas::resizeGL(int width, int height) {
 }
 
 
-void MainCanvas::drawElement(DrawElement &element) {
+void MainCanvas::drawElement(GraphicElement &element) {
   for (auto primitive : element.primitives()) {
-    drawPrimitive(*primitive);
+    drawPrimitive(*primitive, element.rotation(), element.scale());
   }
 }
 
-void MainCanvas::drawPrimitive(DrawPrimitive &primitive) {
+void MainCanvas::drawPrimitive(DrawPrimitive &primitive, double rotation_angle, double scale) {
   QMatrix4x4 model_view_matrix;
   model_view_matrix.setToIdentity();
 
   m_shader_program.setAttributeArray("vertex", primitive.vertexVector().constData());
   m_shader_program.enableAttributeArray("vertex");
 
-  bool rotate = (int(primitive.rotation() / 360) * 360 == primitive.rotation()? false: true);
-  bool scale = (primitive.scale() != 1.0? true: false);
+  bool execute_rotation = (int(primitive.rotation() + rotation_angle / 360) * 360 == primitive.rotation()? false: true);
+  bool execute_scale = (primitive.scale() + scale != 1.0? true: false);
 
-  if (rotate) {
+  if (execute_rotation) {
     model_view_matrix.translate(primitive.x(), primitive.y(), 0.0);
-    model_view_matrix.rotate(primitive.rotation(), 0.0, 0.0, 1.0);
+    model_view_matrix.rotate(primitive.rotation() + rotation_angle, 0.0, 0.0, 1.0);
     model_view_matrix.translate(-primitive.x(), -primitive.y(), 0.0);
   }
 
-  if (scale) {
+  if (execute_scale) {
     model_view_matrix.translate(-primitive.x(), -primitive.y(), 0.0);
-    model_view_matrix.scale(primitive.scale(), primitive.scale(), 1.0);
+    model_view_matrix.scale(primitive.scale() + scale, primitive.scale(), 1.0);
     model_view_matrix.translate(primitive.x(), primitive.y(), 0.0);
   }
 
@@ -112,16 +123,23 @@ void MainCanvas::drawPrimitive(DrawPrimitive &primitive) {
 
   m_shader_program.setUniformValue("model_view_matrix", model_view_matrix);
 
-  if (primitive.containBorder()) {
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    m_shader_program.setUniformValue("color", primitive.borderColor());
-    glDrawArrays(primitive.glBorderPrimitive(), 0, primitive.borderVertexVector().size());
-  }
-
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   m_shader_program.setUniformValue("color", primitive.color());
   glDrawArrays(primitive.glPrimitive(), 0, primitive.vertexVector().size());
 
-  m_shader_program.disableAttributeArray("vertex");
+  if (primitive.containBorder()) {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    float line_width;
+    glGetFloatv(GL_LINE_WIDTH, &line_width);
 
+    // TODO: Add the border_width to DrawPrimitive
+    glLineWidth(line_width + 0.5);
+
+    m_shader_program.setUniformValue("color", primitive.borderColor());
+    glDrawArrays(primitive.glBorderPrimitive(), 0, primitive.borderVertexVector().size());
+
+    glLineWidth(line_width);
+  }
+
+  m_shader_program.disableAttributeArray("vertex");
 }

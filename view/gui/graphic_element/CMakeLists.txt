@@ -1,4 +1,4 @@
-set(project_name "view_gui_draw_element")
+set(project_name "view_gui_graphic_element")
 
 file(GLOB_RECURSE HEADERS *.h)
 file(GLOB_RECURSE SOURCES *.cpp)

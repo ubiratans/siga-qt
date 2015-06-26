@@ -1,21 +1,13 @@
-#include "view/gui/draw_element/draw_primitive/draw_primitive.h"
+#include "view/gui/graphic_element/draw_primitive/draw_primitive.h"
 
 DrawPrimitive::DrawPrimitive(float x, float y, QColor &color, QColor &border_color, QString label)
   : m_x(x), m_y(y), m_color(color), m_border_color(border_color), m_label(label),
-    m_scale(1.0), m_rotation_angle_degree(0.0), m_enable_border(true), m_last_height_proportion(1.0), m_last_width_proportion(1.0)
+    m_scale(1.0), m_rotation_angle_degree(0.0), m_enable_border(true)
 {
 
 }
 
 DrawPrimitive::~DrawPrimitive() {
-}
-
-QString DrawPrimitive::label() {
-  return m_label;
-}
-
-void DrawPrimitive::setLabel(QString &label) {
-  m_label = label;
 }
 
 QColor DrawPrimitive::color() {
@@ -68,8 +60,6 @@ float DrawPrimitive::x() {
 
 void DrawPrimitive::setX(float x) {
   m_x = x;
-
-  calculateVertices();
 }
 
 float DrawPrimitive::y() {
@@ -78,15 +68,11 @@ float DrawPrimitive::y() {
 
 void DrawPrimitive::setY(float y) {
   m_y = y;
-
-  calculateVertices();
 }
 
 void DrawPrimitive::setPosition(float x, float y) {
   m_x = x;
   m_y = y;
-
-  calculateVertices();
 }
 
 double DrawPrimitive::scale() {
@@ -107,14 +93,4 @@ void DrawPrimitive::setRotation(double angle_degree) {
 
 const QVector<QVector3D> &DrawPrimitive::vertexVector() {
   return m_vertex_vec;
-}
-
-void DrawPrimitive::computeVertices(double screen_world_width_proportion, double screen_world_height_proportion) {
-  if (m_last_width_proportion != screen_world_width_proportion || screen_world_height_proportion != m_last_height_proportion) {
-    calculateVertices(screen_world_width_proportion, screen_world_height_proportion);
-  }
-}
-
-void DrawPrimitive::calculateVertices() {
-  calculateVertices(m_last_width_proportion, m_last_height_proportion);
 }

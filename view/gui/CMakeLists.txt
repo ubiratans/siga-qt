@@ -9,7 +9,7 @@ wrap_qt_ui_files(FORM_HEADERS ${project_name} ${FORMS})
 
 # Subdirectories
 add_subdirectory(canvas)
-add_subdirectory(draw_element)
+add_subdirectory(graphic_element)
 
 add_executable(${project_name} ${SOURCES} ${HEADERS} ${FORM_HEADERS})
 

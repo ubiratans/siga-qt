@@ -11,9 +11,6 @@ public:
   DrawPrimitive(float x, float y, QColor &color, QColor &border_color, QString label = "");
   virtual ~DrawPrimitive();
 
-  QString label();
-  void setLabel(QString &label);
-
   QColor color();
   void setColor(int r, int g, int b, int alpha);
   void setColor(QColor &color);
@@ -46,15 +43,9 @@ public:
 
   const QVector< QVector3D >& vertexVector();
 
-  void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion);
+ virtual void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion) = 0;
 
 protected:
-  void calculateVertices();
-  virtual void calculateVertices(double screen_world_width_proportion, double screen_world_height_proportion) = 0;
-
-  double m_last_width_proportion;
-  double m_last_height_proportion;
-
   QVector< QVector3D > m_vertex_vec;
   QVector< QVector3D > m_border_vertex_vec;
 

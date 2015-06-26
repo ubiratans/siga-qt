@@ -5,8 +5,8 @@
 #include <GL/gl.h>
 #include <QGLShaderProgram>
 
-#include "view/gui/draw_element/draw_element.h"
-#include "view/gui/draw_element/draw_primitive/draw_primitive.h"
+#include "view/gui/graphic_element/graphic_element.h"
+#include "view/gui/graphic_element/draw_primitive/draw_primitive.h"
 
 class CoordinateSystem;
 class CanvasElementManager;
@@ -36,8 +36,8 @@ public:
   void redraw();*/
 
 protected:
-  void drawElement(DrawElement &element);
-  void drawPrimitive(DrawPrimitive &primitive);
+  void drawElement(GraphicElement &element);
+  void drawPrimitive(DrawPrimitive &primitive, double rotation_angle, double scale);
 
   virtual void initializeGL(); //!< initialize context
   virtual void paintGL(); //!< called when the widget needs to be redrawn
