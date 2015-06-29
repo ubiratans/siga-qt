@@ -14,7 +14,7 @@ DrawTriangle::~DrawTriangle() {
 }
 
 void DrawTriangle::computeVertices(double screen_world_width_proportion, double screen_world_height_proportion) {
-  long inc = 8;
+  long inc = 10;
 
   float y_inc = inc * screen_world_height_proportion;
   float x_inc = inc * screen_world_width_proportion;

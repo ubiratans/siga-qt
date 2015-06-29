@@ -50,31 +50,47 @@ void MainCanvas::paintGL() {
         0,
         GraphicNodeStruct(NodeType::Reservoir,
                           0.0,
-                          0.0,
+                          2.0,
                           m_coordinate_system->width() / (m_max_width * m_zoom),
                           m_coordinate_system->height() / (m_max_height * m_zoom),
                           0.0,
-                          1.0
+                          2.0
                           )
         );
+
+  node->setRotation(180);
 
   GraphicNode *node2 = new GraphicNode(
         0,
-        GraphicNodeStruct(NodeType::Reservoir,
-                          1.25,
-                          0.0,
+        GraphicNodeStruct(NodeType::Basin,
+                          -8.0,
+                          2.0,
                           m_coordinate_system->width() / (m_max_width * m_zoom),
                           m_coordinate_system->height() / (m_max_height * m_zoom),
                           0.0,
-                          1.0
+                          2.0
                           )
         );
 
-  //node->computeVertices();
+  GraphicNode *node3 = new GraphicNode(
+        0,
+        GraphicNodeStruct(NodeType::Demand,
+                          8.0,
+                          2.0,
+                          m_coordinate_system->width() / (m_max_width * m_zoom),
+                          m_coordinate_system->height() / (m_max_height * m_zoom),
+                          0.0,
+                          2.0
+                          )
+        );
+
+  node->computeVertices();
   node2->computeVertices();
+  node3->computeVertices();
 
   drawElement(*node);
   drawElement(*node2);
+  drawElement(*node3);
 
   m_shader_program.release();
 
@@ -108,23 +124,26 @@ void MainCanvas::drawPrimitive(DrawPrimitive &primitive, double rotation_angle, 
 
   m_shader_program.setAttributeArray("vertex", primitive.vertexVector().constData());
   m_shader_program.enableAttributeArray("vertex");
+  double real_scale = primitive.scale() * scale;
 
   bool execute_rotation = (int((primitive.rotation() + rotation_angle) / 360) * 360.0 == primitive.rotation() + rotation_angle? false: true);
-  bool execute_scale = (primitive.scale() * scale != 1.0? true: false);
+  bool execute_scale = (real_scale != 1.0? true: false);
+
+  //model_view_matrix.translate(primitive.x(), primitive.y(), 0.0);
+
+  if (execute_scale) {
+    model_view_matrix.translate(-1.0 * primitive.x(), -1.0 * primitive.y(), 0.0);
+
+    model_view_matrix.scale(real_scale, real_scale);
+  }
 
   if (execute_rotation) {
     model_view_matrix.translate(primitive.x(), primitive.y(), 0.0);
+
     model_view_matrix.rotate(primitive.rotation() + rotation_angle, 0.0, 0.0, 1.0);
+
     model_view_matrix.translate(-primitive.x(), -primitive.y(), 0.0);
   }
-
-  if (execute_scale) {
-    model_view_matrix.translate(-primitive.x(), -primitive.y(), 0.0);
-    model_view_matrix.scale(primitive.scale() + scale, primitive.scale(), 1.0);
-    model_view_matrix.translate(primitive.x(), primitive.y(), 0.0);
-  }
-
-  model_view_matrix.translate(primitive.x(), primitive.y(), 0.0);
 
   m_shader_program.setUniformValue("model_view_matrix", model_view_matrix);
 
@@ -138,7 +157,7 @@ void MainCanvas::drawPrimitive(DrawPrimitive &primitive, double rotation_angle, 
     glGetFloatv(GL_LINE_WIDTH, &line_width);
 
     // TODO: Add the border_width to DrawPrimitive
-    glLineWidth(line_width + 1.0);
+    glLineWidth(line_width /*+ 0.5*/);
 
     m_shader_program.setUniformValue("color", primitive.borderColor());
     glDrawArrays(primitive.glBorderPrimitive(), 0, primitive.borderVertexVector().size());

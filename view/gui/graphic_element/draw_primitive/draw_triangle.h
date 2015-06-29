@@ -9,9 +9,6 @@ public:
   virtual ~DrawTriangle();
 
   virtual void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion);
-
-protected:
-
 };
 
 #endif
