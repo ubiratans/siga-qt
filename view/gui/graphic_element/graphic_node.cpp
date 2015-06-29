@@ -79,12 +79,12 @@ void GraphicNode::initialize(NodeType type) {
     break;
 
     case NodeType::Junction: {
-
+      m_draw_node = new DrawJunction(m_x, m_y);
     }
     break;
 
     case NodeType::Lake: {
-
+      m_draw_node = new DrawLake(m_x, m_y);
     }
     break;
   }

@@ -1,7 +1,7 @@
 #include "view/gui/graphic_element/draw_primitive/draw_triangle.h"
 
-DrawTriangle::DrawTriangle(float x, float y, QColor color, QColor border_color)
-  : DrawPrimitive(x, y, color, border_color)
+DrawTriangle::DrawTriangle(float x, float y, QColor color, QColor border_color, float edge_size)
+  : DrawPrimitive(x, y, color, border_color), m_size(edge_size)
 {
   m_gl_primitive = GL_TRIANGLES;
   m_gl_border_primitive = GL_TRIANGLES;
@@ -13,8 +13,12 @@ DrawTriangle::~DrawTriangle() {
 
 }
 
+void DrawTriangle::setEdgeSize(float size) {
+  m_size = size;
+}
+
 void DrawTriangle::computeVertices(double screen_world_width_proportion, double screen_world_height_proportion) {
-  long inc = 10;
+  long inc = m_size;
 
   float y_inc = inc * screen_world_height_proportion;
   float x_inc = inc * screen_world_width_proportion;

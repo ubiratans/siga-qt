@@ -11,7 +11,7 @@
 MainCanvas::MainCanvas(/*CanvasElementManager &manager,*/CoordinateSystem &coord_system, QWidget *parent)
   : QGLWidget(QGLFormat(QGL::DoubleBuffer), parent), m_coordinate_system(&coord_system)
 {
-  m_pos_x = -30.0;
+  m_pos_x = -10.0;
   m_pos_y = -15.0;
   m_max_width = m_coordinate_system->width() * 10;
   m_max_height = m_coordinate_system->height() * 10;
@@ -54,43 +54,70 @@ void MainCanvas::paintGL() {
                           m_coordinate_system->width() / (m_max_width * m_zoom),
                           m_coordinate_system->height() / (m_max_height * m_zoom),
                           0.0,
-                          2.0
+                          1.0
                           )
         );
 
-  node->setRotation(180);
 
   GraphicNode *node2 = new GraphicNode(
         0,
         GraphicNodeStruct(NodeType::Basin,
-                          -8.0,
+                          8.0,
                           2.0,
                           m_coordinate_system->width() / (m_max_width * m_zoom),
                           m_coordinate_system->height() / (m_max_height * m_zoom),
                           0.0,
-                          2.0
+                          1.0
                           )
         );
 
   GraphicNode *node3 = new GraphicNode(
         0,
         GraphicNodeStruct(NodeType::Demand,
-                          8.0,
+                          16.0,
                           2.0,
                           m_coordinate_system->width() / (m_max_width * m_zoom),
                           m_coordinate_system->height() / (m_max_height * m_zoom),
                           0.0,
-                          2.0
+                          1.0
+                          )
+        );
+
+  GraphicNode *node4 = new GraphicNode(
+        0,
+        GraphicNodeStruct(NodeType::Junction,
+                          24.0,
+                          2.0,
+                          m_coordinate_system->width() / (m_max_width * m_zoom),
+                          m_coordinate_system->height() / (m_max_height * m_zoom),
+                          0.0,
+                          1.0
+                          )
+        );
+
+  GraphicNode *node5 = new GraphicNode(
+        0,
+        GraphicNodeStruct(NodeType::Lake,
+                          32.0,
+                          2.0,
+                          m_coordinate_system->width() / (m_max_width * m_zoom),
+                          m_coordinate_system->height() / (m_max_height * m_zoom),
+                          0.0,
+                          1.0
                           )
         );
 
   node->computeVertices();
   node2->computeVertices();
   node3->computeVertices();
+  node4->computeVertices();
+  node5->computeVertices();
 
   drawElement(*node);
   drawElement(*node2);
   drawElement(*node3);
+  drawElement(*node4);
+  drawElement(*node5);
 
   m_shader_program.release();
 

@@ -38,7 +38,7 @@ protected:
   float m_x;
   float m_y;
 
-  bool m_has_compute_vertices;
+  bool m_has_to_compute_vertices;
   bool m_initialized;
 
   std::vector< DrawPrimitive* > m_primitives_vector;

@@ -5,10 +5,15 @@
 
 class DrawCircle : public DrawPrimitive {
 public:
-  DrawCircle(float x, float y, QColor color, QColor border_color);
+  DrawCircle(float x, float y, QColor color, QColor border_color, float radius = 10.0);
   virtual ~DrawCircle();
 
+  void setRadius(float radius);
+
   virtual void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion);
+
+private:
+  float m_radius;
 };
 
 #endif

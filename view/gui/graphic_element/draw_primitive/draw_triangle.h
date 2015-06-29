@@ -5,10 +5,15 @@
 
 class DrawTriangle : public DrawPrimitive {
 public:
-  DrawTriangle(float x, float y, QColor color, QColor border_color);
+  DrawTriangle(float x, float y, QColor color, QColor border_color, float edge_size = 10.0);
   virtual ~DrawTriangle();
 
+  void setEdgeSize(float size);
+
   virtual void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion);
+
+private:
+  float m_size;
 };
 
 #endif

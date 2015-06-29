@@ -8,7 +8,7 @@ DrawRectangle::DrawRectangle(float x, float y, QColor color, QColor border_color
   m_vertex_vec.resize(4);
   m_border_vertex_vec.resize(4);
 
-  m_width = m_height = 10.0;
+  m_width = m_height = 6.0;
 }
 
 DrawRectangle::~DrawRectangle() {
@@ -79,4 +79,3 @@ void DrawRectangle::computeVertices(double screen_world_width_proportion, double
   m_border_vertex_vec[3].setY(border_vertices[3][1]);
   m_border_vertex_vec[3].setZ(0.0);
 }
-

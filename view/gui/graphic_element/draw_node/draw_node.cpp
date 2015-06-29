@@ -2,7 +2,7 @@
 
 #include "view/gui/graphic_element/draw_primitive/draw_primitive.h"
 
-DrawNode::DrawNode(float x, float y) : m_x(x), m_y(y), m_has_compute_vertices(true) {
+DrawNode::DrawNode(float x, float y) : m_x(x), m_y(y), m_has_to_compute_vertices(true) {
 
 }
 
@@ -23,7 +23,7 @@ void DrawNode::setX(float x) {
     primitive->setX(x);
   }
 
-  m_has_compute_vertices = true;
+  m_has_to_compute_vertices = true;
 }
 
 float DrawNode::y() {
@@ -37,7 +37,7 @@ void DrawNode::setY(float y) {
     primitive->setY(y);
   }
 
-  m_has_compute_vertices = true;
+  m_has_to_compute_vertices = true;
 }
 
 void DrawNode::setPosition(float x, float y) {
@@ -46,7 +46,7 @@ void DrawNode::setPosition(float x, float y) {
 }
 
 bool DrawNode::verticesUpdated() {
-  return !m_has_compute_vertices;
+  return !m_has_to_compute_vertices;
 }
 
 std::vector<DrawPrimitive *> &DrawNode::primitives() {
@@ -64,5 +64,5 @@ void DrawNode::computeVertices(double screen_world_width_proportion, double scre
     primitive->computeVertices(screen_world_width_proportion, screen_world_height_proportion);
   }
 
-  m_has_compute_vertices = false;
+  m_has_to_compute_vertices = false;
 }
