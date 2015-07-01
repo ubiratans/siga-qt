@@ -10,9 +10,9 @@ public:
 
   void setRadius(float radius);
 
-  virtual void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion);
-
 private:
+    virtual void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion);
+
   float m_radius;
 };
 

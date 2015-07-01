@@ -23,9 +23,7 @@ public:
   GLenum glBorderPrimitive();
 
   virtual bool containBorder();
-  virtual bool enableBorder(bool enable);
-
-  const QVector< QVector3D >& borderVertexVector();
+  virtual void enableBorder(bool enable);
 
   float x();
   void setX(float x);
@@ -43,11 +41,16 @@ public:
 
   const QVector< QVector3D >& vertexVector();
 
- virtual void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion) = 0;
+  void calculateVertices(double screen_world_width_proportion, double screen_world_height_proportion);
+
+  void applyTransformations();
 
 protected:
+    virtual void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion) = 0;
+
+  QMatrix4x4 m_model_view_matrix;
+
   QVector< QVector3D > m_vertex_vec;
-  QVector< QVector3D > m_border_vertex_vec;
 
   GLenum m_gl_primitive;
   GLenum m_gl_border_primitive;

@@ -12,25 +12,27 @@ GraphicNode::GraphicNode(ElementID id, GraphicNodeStruct st)
   : GraphicElement(id, ElementType::Node), m_x(st.m_x), m_y(st.m_y),
     m_last_screen_world_width_ratio(st.m_screen_world_width_ratio), m_last_screen_world_height_ratio(st.m_screen_world_height_ratio)
 {
-   m_scale = st.m_scale;
-   m_rotation = st.m_rotation;
+  m_scale = st.m_scale;
+  m_rotation = st.m_rotation;
 
-   initialize(st.m_type);
+  initialize(st.m_type);
 }
 
-void GraphicNode::computeVertices() {
-  computeVertices(m_last_screen_world_width_ratio, m_last_screen_world_height_ratio);
+void GraphicNode::calculateVertices() {
+  calculateVertices(m_last_screen_world_width_ratio, m_last_screen_world_height_ratio);
 }
 
-void GraphicNode::computeVertices(double screen_world_width_proportion, double screen_world_height_proportion) {
+void GraphicNode::calculateVertices(double screen_world_width_proportion, double screen_world_height_proportion) {
   if (m_last_screen_world_width_ratio != screen_world_width_proportion
       || screen_world_height_proportion != m_last_screen_world_height_ratio)
   {
-    m_draw_node->computeVertices(screen_world_width_proportion, screen_world_height_proportion);
+    m_draw_node->calculateVertices(screen_world_width_proportion, screen_world_height_proportion);
 
     m_last_screen_world_width_ratio = screen_world_width_proportion;
     m_last_screen_world_height_ratio = screen_world_height_proportion;
   }
+
+  m_has_to_calculate_primitives_vertices = false;
 }
 
 void GraphicNode::setPosition(float x, float y) {
@@ -38,7 +40,29 @@ void GraphicNode::setPosition(float x, float y) {
   m_y = y;
 
   m_draw_node->setPosition(x, y);
-  m_draw_node->computeVertices(m_last_screen_world_width_ratio, m_last_screen_world_height_ratio);
+  m_draw_node->calculateVertices(m_last_screen_world_width_ratio, m_last_screen_world_height_ratio);
+
+  m_has_to_calculate_primitives_vertices = true;
+}
+
+void GraphicNode::setScale(float value) {
+  if (value != m_scale) {
+    m_scale = value;
+
+    m_draw_node->setScale(value);
+
+    m_has_to_calculate_primitives_vertices = true;
+  }
+}
+
+void GraphicNode::setRotation(float value) {
+  if (value != m_scale) {
+    m_scale = value;
+
+    m_draw_node->setScale(value);
+
+    m_has_to_calculate_primitives_vertices = true;
+  }
 }
 
 NodeType GraphicNode::type() {
@@ -65,29 +89,29 @@ const std::vector<DrawPrimitive *> &GraphicNode::primitives() {
 
 void GraphicNode::initialize(NodeType type) {
   switch (type) {
-    case NodeType::Reservoir:
-      m_draw_node = new DrawReservoir(m_x, m_y);
+  case NodeType::Reservoir:
+    m_draw_node = new DrawReservoir(m_x, m_y);
     break;
 
-    case NodeType::Basin:
-      m_draw_node = new DrawBasin(m_x, m_y);
+  case NodeType::Basin:
+    m_draw_node = new DrawBasin(m_x, m_y);
     break;
 
-    case NodeType::Demand: {
-      m_draw_node = new DrawDemand(m_x, m_y);
-    }
+  case NodeType::Demand: {
+    m_draw_node = new DrawDemand(m_x, m_y);
+  }
     break;
 
-    case NodeType::Junction: {
-      m_draw_node = new DrawJunction(m_x, m_y);
-    }
+  case NodeType::Junction: {
+    m_draw_node = new DrawJunction(m_x, m_y);
+  }
     break;
 
-    case NodeType::Lake: {
-      m_draw_node = new DrawLake(m_x, m_y);
-    }
+  case NodeType::Lake: {
+    m_draw_node = new DrawLake(m_x, m_y);
+  }
     break;
   }
 
-  m_draw_node->computeVertices(m_last_screen_world_width_ratio, m_last_screen_world_height_ratio);
+  m_draw_node->calculateVertices(m_last_screen_world_width_ratio, m_last_screen_world_height_ratio);
 }

@@ -46,12 +46,8 @@ bool DrawPrimitive::containBorder() {
   return m_enable_border;
 }
 
-bool DrawPrimitive::enableBorder(bool enable) {
+void DrawPrimitive::enableBorder(bool enable) {
   m_enable_border = enable;
-}
-
-const QVector<QVector3D> &DrawPrimitive::borderVertexVector() {
-  return m_border_vertex_vec;
 }
 
 float DrawPrimitive::x() {
@@ -93,4 +89,38 @@ void DrawPrimitive::setRotation(double angle_degree) {
 
 const QVector<QVector3D> &DrawPrimitive::vertexVector() {
   return m_vertex_vec;
+}
+
+void DrawPrimitive::calculateVertices(double screen_world_width_proportion, double screen_world_height_proportion) {
+  computeVertices(screen_world_width_proportion, screen_world_height_proportion);
+
+  applyTransformations();
+}
+
+void DrawPrimitive::applyTransformations() {
+  QMatrix4x4 model_view_matrix;
+  model_view_matrix.setToIdentity();
+
+  bool execute_rotation = (int(m_rotation_angle_degree / 360) * 360.0 == m_rotation_angle_degree? false: true);
+  bool execute_scale = (m_scale != 1.0? true: false);
+
+  if (execute_scale) {
+    model_view_matrix.translate(-1.0 * x(), -1.0 * y(), 0.0);
+
+    model_view_matrix.scale(m_scale, m_scale);
+  }
+
+  if (execute_rotation) {
+    model_view_matrix.translate(x(), y(), 0.0);
+
+    model_view_matrix.rotate(rotation(), 0.0, 0.0, 1.0);
+
+    model_view_matrix.translate(-x(), -y(), 0.0);
+  }
+
+  int i = 0;
+
+  for (auto vertex : vertexVector()) {
+    m_vertex_vec[i++] = model_view_matrix * vertex;
+  }
 }

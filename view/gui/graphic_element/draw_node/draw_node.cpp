@@ -45,6 +45,22 @@ void DrawNode::setPosition(float x, float y) {
   setY(y);
 }
 
+void DrawNode::setRotation(float angle) {
+  for (DrawNodePrimitiveSt st : m_primitives_info) {
+    st.m_draw_primitive->setRotation( st.m_rotation + angle );
+  }
+
+  m_has_to_compute_vertices = true;
+}
+
+void DrawNode::setScale(float scale) {
+  for (DrawNodePrimitiveSt st : m_primitives_info) {
+    st.m_draw_primitive->setRotation( st.m_scale * scale );
+  }
+
+  m_has_to_compute_vertices = true;
+}
+
 bool DrawNode::verticesUpdated() {
   return !m_has_to_compute_vertices;
 }
@@ -53,7 +69,7 @@ std::vector<DrawPrimitive *> &DrawNode::primitives() {
   return m_primitives_vector;
 }
 
-void DrawNode::computeVertices(double screen_world_width_proportion, double screen_world_height_proportion) {
+void DrawNode::calculateVertices(double screen_world_width_proportion, double screen_world_height_proportion) {
   if (!m_initialized) {
     initialize();
 
@@ -61,7 +77,7 @@ void DrawNode::computeVertices(double screen_world_width_proportion, double scre
   }
 
   for (auto primitive : m_primitives_vector) {
-    primitive->computeVertices(screen_world_width_proportion, screen_world_height_proportion);
+    primitive->calculateVertices(screen_world_width_proportion, screen_world_height_proportion);
   }
 
   m_has_to_compute_vertices = false;

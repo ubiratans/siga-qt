@@ -3,10 +3,24 @@
 
 #include <QString>
 #include <vector>
+#include <map>
 
 #include "core/element/element_structs.h"
 
 class DrawPrimitive;
+
+struct DrawNodePrimitiveSt {
+  DrawNodePrimitiveSt() {
+    m_rotation = 0.0;
+    m_scale = 1.0;
+
+    m_draw_primitive = nullptr;
+  }
+
+  DrawPrimitive *m_draw_primitive;
+  float m_rotation;
+  float m_scale;
+};
 
 class DrawNode {
 public:
@@ -21,6 +35,9 @@ public:
 
   void setPosition(float x, float y);
 
+  void setRotation(float angle);
+  void setScale(float scale);
+
   virtual NodeType type() = 0;
 
   bool verticesUpdated();
@@ -28,7 +45,7 @@ public:
   std::vector< DrawPrimitive* >& primitives();
 
   //!< The main intent of this method is to compute all the primitives vertices, but it also calls the initialize() if is needed.
-  void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion);
+  void calculateVertices(double screen_world_width_proportion, double screen_world_height_proportion);
 
 protected:
   //!< This method will instantiate the primitives and fill the primitives vector, it SHALL not calculate the primitive vertices.
@@ -42,6 +59,7 @@ protected:
   bool m_initialized;
 
   std::vector< DrawPrimitive* > m_primitives_vector;
+  std::vector< DrawNodePrimitiveSt > m_primitives_info;
 };
 
 #endif

@@ -24,14 +24,11 @@ void DrawCircle::computeVertices(double screen_world_width_proportion, double sc
   float delta_theta = 0.01;
 
   m_vertex_vec.clear();
-  m_border_vertex_vec.clear();
-
   for (float angle = 0.0; angle < 2.0*pi; angle += delta_theta) {
     float x = cos(angle);
     float y = sin(angle);
 
     m_vertex_vec.push_back(QVector3D(x * radius_x + m_x, y * radius_y + m_y, 0.0));
-    m_border_vertex_vec.push_back(QVector3D(x * (radius_x +1) + m_x, y * (radius_y+1) + m_y, 0.0));
   }
 }
 

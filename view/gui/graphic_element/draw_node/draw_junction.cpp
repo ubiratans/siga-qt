@@ -15,5 +15,9 @@ void DrawJunction::initialize() {
 
     DrawCircle *circle = new DrawCircle(m_x, m_y, QColor(0, 0, 255, 255), QColor(Qt::black), 6.0);
 
+    DrawNodePrimitiveSt st;
+    st.m_draw_primitive = circle;
+
     m_primitives_vector.push_back(circle);
+    m_primitives_info.push_back(st);
 }

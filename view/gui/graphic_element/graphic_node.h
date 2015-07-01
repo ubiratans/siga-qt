@@ -11,13 +11,16 @@ class GraphicNode : public GraphicElement {
 public:
   GraphicNode(ElementID id, GraphicNodeStruct graphic_node_st);
 
-  void computeVertices();
-  void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion);
+  void calculateVertices();
+  void calculateVertices(double screen_world_width_proportion, double screen_world_height_proportion);
 
   float x();
   float y();
 
   void setPosition(float x, float y); //!< position in world coordinates
+
+  void setScale(float value);
+  void setRotation(float value);
 
   NodeType type();
   bool setType(NodeType type);

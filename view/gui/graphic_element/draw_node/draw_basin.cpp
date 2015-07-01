@@ -15,5 +15,9 @@ void DrawBasin::initialize() {
 
     DrawCircle *circle = new DrawCircle(m_x, m_y, QColor(0, 0, 150, 255), QColor(Qt::black));
 
+    DrawNodePrimitiveSt st;
+    st.m_draw_primitive = circle;
+
     m_primitives_vector.push_back(circle);
+    m_primitives_info.push_back(st);
 }

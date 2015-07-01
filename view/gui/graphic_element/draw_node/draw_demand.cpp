@@ -16,5 +16,10 @@ void DrawDemand::initialize() {
     DrawRectangle *primitive = new DrawRectangle(m_x, m_y, QColor(200, 0, 0, 255), QColor(Qt::black));
     primitive->setRotation(45);
 
+    DrawNodePrimitiveSt st;
+    st.m_draw_primitive = primitive;
+    st.m_rotation = 45.0;
+
     m_primitives_vector.push_back(primitive);
+    m_primitives_info.push_back(st);
 }

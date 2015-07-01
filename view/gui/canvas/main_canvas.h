@@ -36,12 +36,14 @@ public:
   void redraw();*/
 
 protected:
-  void drawElement(GraphicElement &element);
-  void drawPrimitive(DrawPrimitive &primitive, double rotation_angle, double scale);
+  void drawElement(GraphicElement &element, bool recalculate_vertices = false);
+  void drawPrimitive(DrawPrimitive &primitive);
 
   virtual void initializeGL(); //!< initialize context
   virtual void paintGL(); //!< called when the widget needs to be redrawn
   virtual void resizeGL(int width, int height); //!< called when the widget is resized
+
+  bool hasToUpdateVertices();
 
   QGLShaderProgram m_shader_program;
 
@@ -55,6 +57,8 @@ private:
   double m_max_height;
 
   double m_zoom;
+
+  bool m_has_to_recalculate_elements_vertices;
 };
 
 #endif

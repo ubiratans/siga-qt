@@ -36,14 +36,14 @@ void MainCanvas::initializeGL() {
       && m_shader_program.link();
 
   if (load_shaders) {
-    qglClearColor(QColor(Qt::white));
+      qglClearColor(QColor(Qt::white));
   }
 }
 
 void MainCanvas::paintGL() {
   glClear(GL_COLOR_BUFFER_BIT);
 
-  bool x = m_shader_program.bind();
+  m_shader_program.bind();
   m_shader_program.setUniformValue("projection_matrix", m_projection_matrix);
 
   GraphicNode *node = new GraphicNode(
@@ -57,6 +57,8 @@ void MainCanvas::paintGL() {
                           1.0
                           )
         );
+
+  node->setRotation(45);
 
 
   GraphicNode *node2 = new GraphicNode(
@@ -107,11 +109,11 @@ void MainCanvas::paintGL() {
                           )
         );
 
-  node->computeVertices();
-  node2->computeVertices();
-  node3->computeVertices();
-  node4->computeVertices();
-  node5->computeVertices();
+  node->calculateVertices();
+  node2->calculateVertices();
+  node3->calculateVertices();
+  node4->calculateVertices();
+  node5->calculateVertices();
 
   drawElement(*node);
   drawElement(*node2);
@@ -120,7 +122,6 @@ void MainCanvas::paintGL() {
   drawElement(*node5);
 
   m_shader_program.release();
-
 
   glFlush();
   //
@@ -132,50 +133,33 @@ void MainCanvas::resizeGL(int width, int height) {
   double right = m_pos_x + (m_coordinate_system->width() / (m_max_width * m_zoom)) * (width - 1);
   double top = m_pos_y + (m_coordinate_system->height() / (m_max_height * m_zoom)) * (height - 1);
 
-  //m_projection_matrix.translate(5.0, 0.5, 0.0);
   m_projection_matrix.ortho(m_pos_x, right, m_pos_y, top, 0.0, 1.0);
 
   glViewport(0, 0, width-1, height-1);
 }
 
+bool MainCanvas::hasToUpdateVertices() {
+  return m_has_to_recalculate_elements_vertices;
+}
 
-void MainCanvas::drawElement(GraphicElement &element) {
+void MainCanvas::drawElement(GraphicElement &element, bool recalculate_vertices) {
+  if (recalculate_vertices || !element.verticesUpdated()) {
+    element.calculateVertices();
+  }
+
   for (auto primitive : element.primitives()) {
-    drawPrimitive(*primitive, element.rotation(), element.scale());
+      drawPrimitive(*primitive);
   }
 }
 
-void MainCanvas::drawPrimitive(DrawPrimitive &primitive, double rotation_angle, double scale) {
-  QMatrix4x4 model_view_matrix;
-  model_view_matrix.setToIdentity();
-
+void MainCanvas::drawPrimitive(DrawPrimitive &primitive) {
   m_shader_program.setAttributeArray("vertex", primitive.vertexVector().constData());
   m_shader_program.enableAttributeArray("vertex");
-  double real_scale = primitive.scale() * scale;
-
-  bool execute_rotation = (int((primitive.rotation() + rotation_angle) / 360) * 360.0 == primitive.rotation() + rotation_angle? false: true);
-  bool execute_scale = (real_scale != 1.0? true: false);
-
-  //model_view_matrix.translate(primitive.x(), primitive.y(), 0.0);
-
-  if (execute_scale) {
-    model_view_matrix.translate(-1.0 * primitive.x(), -1.0 * primitive.y(), 0.0);
-
-    model_view_matrix.scale(real_scale, real_scale);
-  }
-
-  if (execute_rotation) {
-    model_view_matrix.translate(primitive.x(), primitive.y(), 0.0);
-
-    model_view_matrix.rotate(primitive.rotation() + rotation_angle, 0.0, 0.0, 1.0);
-
-    model_view_matrix.translate(-primitive.x(), -primitive.y(), 0.0);
-  }
-
-  m_shader_program.setUniformValue("model_view_matrix", model_view_matrix);
 
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   m_shader_program.setUniformValue("color", primitive.color());
+
+  // draw the vertices
   glDrawArrays(primitive.glPrimitive(), 0, primitive.vertexVector().size());
 
   if (primitive.containBorder()) {
@@ -185,9 +169,8 @@ void MainCanvas::drawPrimitive(DrawPrimitive &primitive, double rotation_angle, 
 
     // TODO: Add the border_width to DrawPrimitive
     glLineWidth(line_width /*+ 0.5*/);
-
     m_shader_program.setUniformValue("color", primitive.borderColor());
-    glDrawArrays(primitive.glBorderPrimitive(), 0, primitive.borderVertexVector().size());
+    glDrawArrays(primitive.glBorderPrimitive(), 0, primitive.vertexVector().size());
 
     glLineWidth(line_width);
   }
