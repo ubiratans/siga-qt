@@ -1,6 +1,6 @@
 #include "view/gui/graphic_element/draw_primitive/draw_triangle.h"
 
-DrawTriangle::DrawTriangle(float x, float y, QColor color, QColor border_color, float edge_size)
+DrawTriangle::DrawTriangle(double x, double y, QColor color, QColor border_color, double edge_size)
   : DrawPrimitive(x, y, color, border_color), m_size(edge_size)
 {
   m_gl_primitive = GL_TRIANGLES;
@@ -12,23 +12,43 @@ DrawTriangle::~DrawTriangle() {
 
 }
 
-void DrawTriangle::setEdgeSize(float size) {
+bool DrawTriangle::hitTest(double x, double y) {
+  QVector3D point(x, y, 0.0);
+
+  bool b1 = sign(point, m_vertex_vec[0], m_vertex_vec[1]) < 0.0;
+  bool b2 = sign(point, m_vertex_vec[1], m_vertex_vec[2]) < 0.0;
+  bool b3 = sign(point, m_vertex_vec[2], m_vertex_vec[3]) < 0.0;
+
+  return ((b1 == b2) && (b2 == b3));
+}
+
+bool DrawTriangle::hitTest(QRect &rect) {
+  return false;
+}
+
+void DrawTriangle::setEdgeSize(double size) {
   m_size = size;
+}
+
+double DrawTriangle::sign(QVector3D &point, QVector3D &triangle_vertex, QVector3D &triangle_vertex_2) {
+  return (point.x() - triangle_vertex_2.x()) *
+      (triangle_vertex.y() - triangle_vertex_2.y()) - (triangle_vertex.x() - triangle_vertex_2.x()) *
+      (point.y() - triangle_vertex_2.y());
 }
 
 void DrawTriangle::computeVertices(double screen_world_width_proportion, double screen_world_height_proportion) {
   long inc = m_size;
 
-  float y_inc = inc * screen_world_height_proportion;
-  float x_inc = inc * screen_world_width_proportion;
+  double y_inc = inc * screen_world_height_proportion;
+  double x_inc = inc * screen_world_width_proportion;
 
-  float min_x = -1 * x_inc + x();
-  float max_x = x_inc + x();
+  double min_x = -1 * x_inc + x();
+  double max_x = x_inc + x();
 
-  float min_y = -1 * y_inc + y();
-  float max_y = y_inc + y();
+  double min_y = -1 * y_inc + y();
+  double max_y = y_inc + y();
 
-  float vertices[3][2] = {
+  double vertices[3][2] = {
     { min_x, min_y },
     { x(), max_y },
     { max_x, min_y}

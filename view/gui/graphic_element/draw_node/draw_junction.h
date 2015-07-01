@@ -5,7 +5,7 @@
 
 class DrawJunction : public DrawNode {
 public:
-  DrawJunction(float x, float y);
+  DrawJunction(double x, double y);
 
   NodeType type();
 

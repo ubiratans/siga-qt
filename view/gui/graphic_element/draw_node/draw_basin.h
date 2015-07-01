@@ -5,7 +5,7 @@
 
 class DrawBasin : public DrawNode {
 public:
-  DrawBasin(float x, float y);
+  DrawBasin(double x, double y);
 
   NodeType type();
 

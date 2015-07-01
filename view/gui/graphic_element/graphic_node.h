@@ -14,13 +14,13 @@ public:
   void calculateVertices();
   void calculateVertices(double screen_world_width_proportion, double screen_world_height_proportion);
 
-  float x();
-  float y();
+  double x();
+  double y();
 
-  void setPosition(float x, float y); //!< position in world coordinates
+  void setPosition(double x, double y); //!< position in world coordinates
 
-  void setScale(float value);
-  void setRotation(float value);
+  void setScale(double value);
+  void setRotation(double value);
 
   NodeType type();
   bool setType(NodeType type);
@@ -38,8 +38,8 @@ private:
   double m_last_screen_world_width_ratio;
   double m_last_screen_world_height_ratio;
 
-  float m_x;
-  float m_y;
+  double m_x;
+  double m_y;
 
   DrawNode *m_draw_node;
   Node *m_linked_node;

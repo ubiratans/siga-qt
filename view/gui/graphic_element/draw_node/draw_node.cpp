@@ -2,7 +2,7 @@
 
 #include "view/gui/graphic_element/draw_primitive/draw_primitive.h"
 
-DrawNode::DrawNode(float x, float y) : m_x(x), m_y(y), m_has_to_compute_vertices(true) {
+DrawNode::DrawNode(double x, double y) : m_x(x), m_y(y), m_has_to_compute_vertices(true) {
 
 }
 
@@ -12,11 +12,11 @@ DrawNode::~DrawNode() {
   }
 }
 
-float DrawNode::x() {
+double DrawNode::x() {
   return m_x;
 }
 
-void DrawNode::setX(float x) {
+void DrawNode::setX(double x) {
   m_x = x;
 
   for (auto primitive : m_primitives_vector) {
@@ -26,11 +26,11 @@ void DrawNode::setX(float x) {
   m_has_to_compute_vertices = true;
 }
 
-float DrawNode::y() {
+double DrawNode::y() {
   return m_y;
 }
 
-void DrawNode::setY(float y) {
+void DrawNode::setY(double y) {
   m_y = y;
 
   for (auto primitive : m_primitives_vector) {
@@ -40,12 +40,12 @@ void DrawNode::setY(float y) {
   m_has_to_compute_vertices = true;
 }
 
-void DrawNode::setPosition(float x, float y) {
+void DrawNode::setPosition(double x, double y) {
   setX(x);
   setY(y);
 }
 
-void DrawNode::setRotation(float angle) {
+void DrawNode::setRotation(double angle) {
   for (DrawNodePrimitiveSt st : m_primitives_info) {
     st.m_draw_primitive->setRotation( st.m_rotation + angle );
   }
@@ -53,7 +53,7 @@ void DrawNode::setRotation(float angle) {
   m_has_to_compute_vertices = true;
 }
 
-void DrawNode::setScale(float scale) {
+void DrawNode::setScale(double scale) {
   for (DrawNodePrimitiveSt st : m_primitives_info) {
     st.m_draw_primitive->setRotation( st.m_scale * scale );
   }

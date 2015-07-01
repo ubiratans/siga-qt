@@ -13,11 +13,11 @@ bool GraphicElement::verticesUpdated() {
   return !m_has_to_calculate_primitives_vertices;
 }
 
-float GraphicElement::scale() {
+double GraphicElement::scale() {
   return m_scale;
 }
 
-float GraphicElement::rotation() {
+double GraphicElement::rotation() {
   return m_rotation;
 }
 

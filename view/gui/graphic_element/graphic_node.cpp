@@ -35,7 +35,7 @@ void GraphicNode::calculateVertices(double screen_world_width_proportion, double
   m_has_to_calculate_primitives_vertices = false;
 }
 
-void GraphicNode::setPosition(float x, float y) {
+void GraphicNode::setPosition(double x, double y) {
   m_x = x;
   m_y = y;
 
@@ -45,7 +45,7 @@ void GraphicNode::setPosition(float x, float y) {
   m_has_to_calculate_primitives_vertices = true;
 }
 
-void GraphicNode::setScale(float value) {
+void GraphicNode::setScale(double value) {
   if (value != m_scale) {
     m_scale = value;
 
@@ -55,7 +55,7 @@ void GraphicNode::setScale(float value) {
   }
 }
 
-void GraphicNode::setRotation(float value) {
+void GraphicNode::setRotation(double value) {
   if (value != m_scale) {
     m_scale = value;
 

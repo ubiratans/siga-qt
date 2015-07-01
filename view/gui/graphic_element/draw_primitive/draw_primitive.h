@@ -5,10 +5,11 @@
 #include <QString>
 #include <QtOpenGL>
 #include <QVector2D>
+#include <QRect>
 
 class DrawPrimitive {
 public:
-  DrawPrimitive(float x, float y, QColor &color, QColor &border_color, QString label = "");
+  DrawPrimitive(double x, double y, QColor &color, QColor &border_color, QString label = "");
   virtual ~DrawPrimitive();
 
   QColor color();
@@ -19,19 +20,22 @@ public:
   void setBorderColor(int r, int g, int b, int alpha);
   void setBorderColor(QColor &color);
 
+  virtual bool hitTest(double x, double y) = 0;
+  virtual bool hitTest(QRect &rect) = 0;
+
   GLenum glPrimitive();
   GLenum glBorderPrimitive();
 
   virtual bool containBorder();
   virtual void enableBorder(bool enable);
 
-  float x();
-  void setX(float x);
+  double x();
+  void setX(double x);
 
-  float y();
-  void setY(float y);
+  double y();
+  void setY(double y);
 
-  void setPosition(float x, float y);
+  void setPosition(double x, double y);
 
   double scale();
   void setScale(double scale);
@@ -55,8 +59,8 @@ protected:
   GLenum m_gl_primitive;
   GLenum m_gl_border_primitive;
 
-  float m_x;
-  float m_y;
+  double m_x;
+  double m_y;
 
   double m_scale;
   double m_rotation_angle_degree;

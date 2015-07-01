@@ -2,7 +2,7 @@
 
 #include "view/gui/graphic_element/draw_primitive/draw_triangle.h"
 
-DrawReservoir::DrawReservoir(float x, float y) : DrawNode(x, y) {
+DrawReservoir::DrawReservoir(double x, double y) : DrawNode(x, y) {
   initialize();
 }
 

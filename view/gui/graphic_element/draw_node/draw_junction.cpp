@@ -2,7 +2,7 @@
 
 #include "view/gui/graphic_element/draw_primitive/draw_circle.h"
 
-DrawJunction::DrawJunction(float x, float y) : DrawNode(x, y) {
+DrawJunction::DrawJunction(double x, double y) : DrawNode(x, y) {
   initialize();
 }
 

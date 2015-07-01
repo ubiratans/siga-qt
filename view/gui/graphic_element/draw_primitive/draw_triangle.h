@@ -5,15 +5,19 @@
 
 class DrawTriangle : public DrawPrimitive {
 public:
-  DrawTriangle(float x, float y, QColor color, QColor border_color, float edge_size = 10.0);
+  DrawTriangle(double x, double y, QColor color, QColor border_color, double edge_size = 10.0);
   virtual ~DrawTriangle();
 
-  void setEdgeSize(float size);
+  bool hitTest(double x, double y);
+  bool hitTest(QRect &rect);
+
+  void setEdgeSize(double size);
 
 private:
-    virtual void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion);
+  double sign(QVector3D &point, QVector3D &triangle_vertex, QVector3D &triangle_vertex_2);
+  virtual void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion);
 
-  float m_size;
+  double m_size;
 };
 
 #endif

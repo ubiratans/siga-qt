@@ -5,7 +5,7 @@
 
 class DrawReservoir : public DrawNode {
 public:
-  DrawReservoir(float x, float y);
+  DrawReservoir(double x, double y);
 
   NodeType type();
 

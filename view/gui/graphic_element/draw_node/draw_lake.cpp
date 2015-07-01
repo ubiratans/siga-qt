@@ -3,7 +3,7 @@
 #include "view/gui/graphic_element/draw_primitive/draw_triangle.h"
 #include "view/gui/graphic_element/draw_primitive/draw_circle.h"
 
-DrawLake::DrawLake(float x, float y) : DrawNode(x, y) {
+DrawLake::DrawLake(double x, double y) : DrawNode(x, y) {
   initialize();
 }
 

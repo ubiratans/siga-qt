@@ -2,7 +2,7 @@
 
 #include "view/gui/graphic_element/draw_primitive/draw_rectangle.h"
 
-DrawDemand::DrawDemand(float x, float y) : DrawNode(x, y) {
+DrawDemand::DrawDemand(double x, double y) : DrawNode(x, y) {
   initialize();
 }
 

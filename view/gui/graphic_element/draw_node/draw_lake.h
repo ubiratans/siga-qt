@@ -5,7 +5,7 @@
 
 class DrawLake : public DrawNode {
 public:
-  DrawLake(float x, float y);
+  DrawLake(double x, double y);
 
   NodeType type();
 

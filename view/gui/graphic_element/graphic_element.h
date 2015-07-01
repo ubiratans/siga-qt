@@ -14,7 +14,7 @@ public:
   GraphicElement(ElementID id, ElementType type);
   virtual ~GraphicElement();
 
-  //virtual bool hitTest(float x, float y) = 0; //!< verify if the point in world coords is within the element
+  //virtual bool hitTest(double x, double y) = 0; //!< verify if the point in world coords is within the element
   //virtual bool hitTest(QRect &rectangle) = 0;
 
   virtual void calculateVertices() = 0;
@@ -22,11 +22,11 @@ public:
 
   bool verticesUpdated();
 
-  float scale();
-  virtual void setScale(float value) = 0;
+  double scale();
+  virtual void setScale(double value) = 0;
 
-  float rotation();
-  virtual void setRotation(float angle) = 0;
+  double rotation();
+  virtual void setRotation(double angle) = 0;
 
   ElementType elementType();
   ElementID id();
@@ -39,8 +39,8 @@ protected:
   ElementID m_id;
   ElementType m_element_type;
 
-  float m_scale; //!< Defines element's draw proportion
-  float m_rotation;
+  double m_scale; //!< Defines element's draw proportion
+  double m_rotation;
 };
 
 #endif

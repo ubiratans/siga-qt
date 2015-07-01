@@ -5,7 +5,7 @@
 
 class DrawDemand : public DrawNode {
 public:
-  DrawDemand(float x, float y);
+  DrawDemand(double x, double y);
 
   NodeType type();
 

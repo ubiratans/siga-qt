@@ -1,6 +1,6 @@
 #include "view/gui/graphic_element/draw_primitive/draw_primitive.h"
 
-DrawPrimitive::DrawPrimitive(float x, float y, QColor &color, QColor &border_color, QString label)
+DrawPrimitive::DrawPrimitive(double x, double y, QColor &color, QColor &border_color, QString label)
   : m_x(x), m_y(y), m_color(color), m_border_color(border_color), m_label(label),
     m_scale(1.0), m_rotation_angle_degree(0.0), m_enable_border(true)
 {
@@ -50,23 +50,23 @@ void DrawPrimitive::enableBorder(bool enable) {
   m_enable_border = enable;
 }
 
-float DrawPrimitive::x() {
+double DrawPrimitive::x() {
   return m_x;
 }
 
-void DrawPrimitive::setX(float x) {
+void DrawPrimitive::setX(double x) {
   m_x = x;
 }
 
-float DrawPrimitive::y() {
+double DrawPrimitive::y() {
   return m_y;
 }
 
-void DrawPrimitive::setY(float y) {
+void DrawPrimitive::setY(double y) {
   m_y = y;
 }
 
-void DrawPrimitive::setPosition(float x, float y) {
+void DrawPrimitive::setPosition(double x, double y) {
   m_x = x;
   m_y = y;
 }

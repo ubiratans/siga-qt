@@ -18,25 +18,25 @@ struct DrawNodePrimitiveSt {
   }
 
   DrawPrimitive *m_draw_primitive;
-  float m_rotation;
-  float m_scale;
+  double m_rotation;
+  double m_scale;
 };
 
 class DrawNode {
 public:
-  DrawNode(float x, float y);
+  DrawNode(double x, double y);
   virtual ~DrawNode();
 
-  float x();
-  void setX(float x);
+  double x();
+  void setX(double x);
 
-  float y();
-  void setY(float y);
+  double y();
+  void setY(double y);
 
-  void setPosition(float x, float y);
+  void setPosition(double x, double y);
 
-  void setRotation(float angle);
-  void setScale(float scale);
+  void setRotation(double angle);
+  void setScale(double scale);
 
   virtual NodeType type() = 0;
 
@@ -52,8 +52,8 @@ protected:
   virtual void initialize() = 0;
   QString m_label;
 
-  float m_x;
-  float m_y;
+  double m_x;
+  double m_y;
 
   bool m_has_to_compute_vertices;
   bool m_initialized;

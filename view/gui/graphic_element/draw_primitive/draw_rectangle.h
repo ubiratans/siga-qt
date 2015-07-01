@@ -5,16 +5,19 @@
 
 class DrawRectangle : public DrawPrimitive {
 public:
-  DrawRectangle(float x, float y, QColor color, QColor border_color);
+  DrawRectangle(double x, double y, QColor color, QColor border_color);
   virtual ~DrawRectangle();
 
-  void setDimensions(float width_pixels, float height_pixels);
+  bool hitTest(double x, double y);
+  bool hitTest(QRect &rect);
+
+  void setDimensions(double width_pixels, double height_pixels);
 
 private:
     virtual void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion);
 
-  float m_width;
-  float m_height;
+  double m_width;
+  double m_height;
 };
 
 #endif
