@@ -24,6 +24,13 @@ void MainWindow::createMenu() {
   m_menu_tools = menuBar()->addMenu(TranslationUtils::tr(kTkMainWindowStringMenuTools));
 }
 
+void MainWindow::createStatusBar() {
+  m_status_bar = new QStatusBar(this);
+  setStatusBar(m_status_bar);
+
+  m_status_bar->showMessage("Latitude: xx.xx Longitude: xx.xx", 0);
+}
+
 void MainWindow::init() {
   TranslationUtils::loadDefaultTranslation();
   TranslationUtils::setDefaultContext(kMainWindowStringsContext);
@@ -31,6 +38,7 @@ void MainWindow::init() {
   setWindowTitle(TranslationUtils::tr(kTkMainWindowStringWindowTitle));
   createMenu();
   createCanvas();
+  createStatusBar();
 }
 
 void MainWindow::createCanvas() {

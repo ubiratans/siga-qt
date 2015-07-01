@@ -21,6 +21,7 @@ protected:
 
 private:
   void createMenu();
+  void createStatusBar();
   void init();
 
   Ui::MainWindow *m_ui;
@@ -29,6 +30,7 @@ private:
   QMenu *m_menu_edit;
   QMenu *m_menu_tools;
   QMenu *m_menu_view;
+  QStatusBar *m_status_bar;
   MainCanvas *m_main_canvas;
 };
 

@@ -15,7 +15,7 @@ void DrawLake::initialize() {
     m_primitives_vector.clear();
 
     DrawTriangle *triangle = new DrawTriangle(m_x, m_y, QColor(70, 180, 255), QColor(Qt::black));
-    DrawTriangle *triangle_intern = new DrawTriangle(m_x, m_y, QColor(90, 220, 255), QColor(Qt::black), 6);
+    DrawTriangle *triangle_intern = new DrawTriangle(m_x, m_y, QColor(110, 240, 255), QColor(Qt::black), 7);
 
     DrawNodePrimitiveSt st;
     DrawNodePrimitiveSt st_intern;
