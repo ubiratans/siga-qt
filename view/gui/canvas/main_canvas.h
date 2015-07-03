@@ -4,7 +4,7 @@
 #include <QGLWidget>
 #include <GL/gl.h>
 #include <QGLShaderProgram>
-#include <QOpenGLFunctions_4_0_Core>
+#include <QOpenGLFunctions_3_0>
 
 #include "view/gui/graphic_element/graphic_element.h"
 #include "view/gui/graphic_element/draw_primitive/draw_primitive.h"
@@ -12,7 +12,7 @@
 class CoordinateSystem;
 class CanvasElementManager;
 
-class MainCanvas : public QGLWidget, protected QOpenGLFunctions_4_0_Core {
+class MainCanvas : public QGLWidget, protected QOpenGLFunctions_3_0 {
   Q_OBJECT
 
 public:

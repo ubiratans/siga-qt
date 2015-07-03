@@ -56,10 +56,10 @@ void GraphicNode::setScale(double value) {
 }
 
 void GraphicNode::setRotation(double value) {
-  if (value != m_scale) {
-    m_scale = value;
+  if (value != m_rotation) {
+    m_rotation = value;
 
-    m_draw_node->setScale(value);
+    m_draw_node->setRotation(value);
 
     m_has_to_calculate_primitives_vertices = true;
   }

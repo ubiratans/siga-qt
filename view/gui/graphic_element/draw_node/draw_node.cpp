@@ -55,7 +55,7 @@ void DrawNode::setRotation(double angle) {
 
 void DrawNode::setScale(double scale) {
   for (DrawNodePrimitiveSt st : m_primitives_info) {
-    st.m_draw_primitive->setRotation( st.m_scale * scale );
+    st.m_draw_primitive->setScale( st.m_scale * scale );
   }
 
   m_has_to_compute_vertices = true;

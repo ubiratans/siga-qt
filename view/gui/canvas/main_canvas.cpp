@@ -12,7 +12,7 @@ MainCanvas::MainCanvas(/*CanvasElementManager &manager,*/CoordinateSystem &coord
   : QGLWidget(QGLFormat(QGL::DoubleBuffer), parent), m_coordinate_system(&coord_system)
 {
   makeCurrent();
-  initializeOpenGLFunctions();
+  bool x = initializeOpenGLFunctions();
   m_pos_x = -10.0;
   m_pos_y = -15.0;
   m_max_width = m_coordinate_system->width() * 10;
@@ -60,8 +60,8 @@ void MainCanvas::paintGL() {
                           )
         );
 
-  node->setRotation(90);
-  node->setScale(3.0);
+  node->setRotation(150.0);
+  node->setScale(2.0);
 
 
   GraphicNode *node2 = new GraphicNode(
