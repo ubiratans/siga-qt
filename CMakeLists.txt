@@ -18,9 +18,30 @@ endif()
 # Set current platform
 message(STATUS "> Identifying platform...")
 
-if(WINDOWS)
+if(WINDOWS OR WIN32)
     set(platform "win")
+	
+	if(NOT DEFINED vs_compiler_path)
+		message(FATAL_ERROR "ERROR: you need to pass the visual studio 2013 compiler bin path. (Ex: -Dvs_compiler_path=C:/Program Files (x86)/Microsoft Visual Studio 12.0/VC/bin")
+	endif()
+	
+	if(NOT DEFINED qt_path)
+		message(FATAL_ERROR "ERROR: you need to specify qt path! (Ex: -Dqt_path=C:\Qt\5.3\msvc2013_64_opengl)\\")
+	endif()
+	
+	if(${m64} STREQUAL TRUE)
+		set(vs_compiler_path "${vs_compiler_path}/amd64/")
+	else()
+		set(vs_compiler_path "${vs_compiler_path}/amd64_x86/")
+	endif()
+	
+	set(CMAKE_PREFIX_PATH "${qt_path}")
+	
+	set(cxx_compiler "${vs_compiler_path}cl.exe")
+        set(compiler_flags "/EHsc")
 
+        set(gtest_force_shared_crt ON CACHE BOOL “Use shared (DLL) run-time lib (CRT) even when Google Test is built as static lib.”)
+	
 elseif(APPLE)
     set(platform "mac")
 
@@ -42,14 +63,17 @@ elseif(UNIX)
         else()
             message(FATAL_ERROR "This linux distro (${contents}) is not supported!\nSupported distros are: Ubuntu, Debian and Red Hat.")
         endif()
+		
+		set(cxx_compiler "g++")
+		set(compiler_flags "-std=c++11 -Wall -Wextra")
 
    else(EXISTS "/etc/issue")
         message(FATAL_ERROR "Platform not supported! The platforms supporteds are: Windows 7 and below, Ubuntu, Red Hat, Debian and Mac")
    endif(EXISTS "/etc/issue")
 
-endif(WINDOWS)
+endif(WINDOWS OR WIN32)
 
-if (${m64} STREQUAL "TRUE")
+if(${m64} STREQUAL "TRUE")
     set(system_architeture 64)
 else()
     set(system_architeture 32)
@@ -67,15 +91,11 @@ else(${CMAKE_BUILD_TYPE} MATCHES "RELEASE" )
     set( LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_LIST_DIR}/Build/Debug/${platform}/lib" )
 endif()
 
-# TODO: Set the compiler for windows and mac
+# TODO: Set the compiler for mac
 # Set C++ compiler and specify to use c++11
-if(UNIX AND NOT APPLE)
-        # set compiler and compiler flags
-        set(COMPILER_FLAGS "-std=c++11 -Wall -Wextra")
-        set(CMAKE_CXX_COMPILER CACHE "g++" FORCE)
-        set(CMAKE_CXX_FLAGS "${COMPILER_FLAGS} ${CMAKE_CXX_FLAGS}")
-endif()
-
+set(CMAKE_CXX_COMPILER CACHE ${cxx_compiler} FORCE)
+set(CMAKE_CXX_FLAGS "${compiler_flags} ${CMAKE_CXX_FLAGS}")
+		
 # Find QT5 package
 find_package(Qt5 REQUIRED COMPONENTS Widgets Gui Core LinguistTools OpenGL)
 

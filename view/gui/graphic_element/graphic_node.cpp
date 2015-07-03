@@ -23,14 +23,14 @@ void GraphicNode::calculateVertices() {
 }
 
 void GraphicNode::calculateVertices(double screen_world_width_proportion, double screen_world_height_proportion) {
-  if (m_last_screen_world_width_ratio != screen_world_width_proportion
+  /*if (m_last_screen_world_width_ratio != screen_world_width_proportion
       || screen_world_height_proportion != m_last_screen_world_height_ratio)
-  {
+  {*/
     m_draw_node->calculateVertices(screen_world_width_proportion, screen_world_height_proportion);
 
     m_last_screen_world_width_ratio = screen_world_width_proportion;
     m_last_screen_world_height_ratio = screen_world_height_proportion;
-  }
+  //}
 
   m_has_to_calculate_primitives_vertices = false;
 }

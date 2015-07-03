@@ -5,4 +5,4 @@ file(GLOB SOURCES *.cpp)
 
 add_library(${project_name} ${SOURCES} ${HEADERS})
 
-target_link_libraries( ${project_name} Qt5::Core Qt5::Widgets Qt5::OpenGL GL core_coordinate_system view_gui_graphic_element )
+target_link_libraries( ${project_name} Qt5::Core Qt5::Widgets Qt5::OpenGL core_coordinate_system view_gui_graphic_element )

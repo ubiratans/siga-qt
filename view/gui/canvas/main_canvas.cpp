@@ -11,6 +11,8 @@
 MainCanvas::MainCanvas(/*CanvasElementManager &manager,*/CoordinateSystem &coord_system, QWidget *parent)
   : QGLWidget(QGLFormat(QGL::DoubleBuffer), parent), m_coordinate_system(&coord_system)
 {
+  makeCurrent();
+  initializeOpenGLFunctions();
   m_pos_x = -10.0;
   m_pos_y = -15.0;
   m_max_width = m_coordinate_system->width() * 10;
@@ -36,7 +38,7 @@ void MainCanvas::initializeGL() {
       && m_shader_program.link();
 
   if (load_shaders) {
-      qglClearColor(QColor(Qt::white));
+    qglClearColor(QColor(Qt::white));
   }
 }
 
@@ -58,7 +60,8 @@ void MainCanvas::paintGL() {
                           )
         );
 
-  node->setRotation(45);
+  node->setRotation(90);
+  node->setScale(3.0);
 
 
   GraphicNode *node2 = new GraphicNode(
@@ -148,7 +151,7 @@ void MainCanvas::drawElement(GraphicElement &element, bool recalculate_vertices)
   }
 
   for (auto primitive : element.primitives()) {
-      drawPrimitive(*primitive);
+    drawPrimitive(*primitive);
   }
 }
 

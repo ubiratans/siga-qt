@@ -9,6 +9,6 @@ GraphicElementManager::~GraphicElementManager() {
 
 }
 
-GraphicNode &GraphicElementManager::addGraphicNode(NodeType type, double world_x, double world_y) {
+/*GraphicNode &GraphicElementManager::addGraphicNode(NodeType type, double world_x, double world_y) {
 
-}
+}*/

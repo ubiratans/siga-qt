@@ -19,7 +19,7 @@ public:
   GraphicElementManager(ElementManager &element_manager);
   virtual ~GraphicElementManager();
 
-  GraphicNode& addGraphicNode(NodeType type, double world_x, double world_y);
+  //GraphicNode& addGraphicNode(NodeType type, double world_x, double world_y);
   bool removeElement(ElementID id);
 
   bool getGraphicNode(ElementID id, GraphicNode* &result);
