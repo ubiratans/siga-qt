@@ -1,18 +1,19 @@
 #ifndef VIEW_CANVAS_MAIN_CANVAS_H
 #define VIEW_CANVAS_MAIN_CANVAS_H
 
-#include <QGLWidget>
-#include <GL/gl.h>
 #include <QGLShaderProgram>
-#include <QOpenGLFunctions_3_0>
+#include <QOpenGLFunctions_2_0>
+#include <QOpenGLWidget>
+#include <QtOpenGL/qgl.h>
 
 #include "view/gui/graphic_element/graphic_element.h"
 #include "view/gui/graphic_element/draw_primitive/draw_primitive.h"
 
 class CoordinateSystem;
 class CanvasElementManager;
+class GraphicNode;
 
-class MainCanvas : public QGLWidget, protected QOpenGLFunctions_3_0 {
+class MainCanvas : public QOpenGLWidget, protected QOpenGLFunctions_2_0 {
   Q_OBJECT
 
 public:
@@ -22,6 +23,7 @@ public:
   const CoordinateSystem* const coordinateSystem(); //!< getter of canvas's coordinate system
   void setCoordinateSystem(CoordinateSystem &coord_system);
 
+  std::pair< double, double > screenToCoordinateSystem(int x, int y);
 
   QGLShaderProgram& shaderProgram();
   /*double zoom();
@@ -44,6 +46,8 @@ protected:
   virtual void paintGL(); //!< called when the widget needs to be redrawn
   virtual void resizeGL(int width, int height); //!< called when the widget is resized
 
+  void mouseMoveEvent(QMouseEvent *event);
+
   bool hasToUpdateVertices();
 
   QGLShaderProgram m_shader_program;
@@ -60,6 +64,10 @@ private:
   double m_zoom;
 
   bool m_has_to_recalculate_elements_vertices;
+
+  QColor m_background_color;
+
+  GraphicNode *node;
 };
 
 #endif

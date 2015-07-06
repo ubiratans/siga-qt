@@ -40,6 +40,8 @@ public:
 
   virtual NodeType type() = 0;
 
+  virtual bool hitTest(double x, double y);
+
   bool verticesUpdated();
 
   std::vector< DrawPrimitive* >& primitives();

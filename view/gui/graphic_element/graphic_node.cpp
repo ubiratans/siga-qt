@@ -65,6 +65,10 @@ void GraphicNode::setRotation(double value) {
   }
 }
 
+bool GraphicNode::hitTest(double x, double y) {
+  return m_draw_node->hitTest(x, y);
+}
+
 NodeType GraphicNode::type() {
   return m_draw_node->type();
 }

@@ -105,9 +105,13 @@ void DrawPrimitive::applyTransformations() {
   bool execute_scale = (m_scale != 1.0? true: false);
 
   if (execute_scale) {
-    model_view_matrix.translate(-1.0 * x(), -1.0 * y(), 0.0);
+    model_view_matrix.translate(x(), y(), 0.0);
 
     model_view_matrix.scale(m_scale, m_scale);
+
+    model_view_matrix.translate(-x(), -y(), 0.0);
+
+
   }
 
   if (execute_rotation) {

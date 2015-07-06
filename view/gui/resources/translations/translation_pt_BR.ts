@@ -5,7 +5,6 @@
     <name>MainWindow</name>
     <message>
         <location filename="../../forms/main_window.ui" line="20"/>
-        <location filename="../../main_window_ui.h" line="60"/>
         <source>MainWindow</source>
         <translation>FUNCEME SIGA</translation>
     </message>

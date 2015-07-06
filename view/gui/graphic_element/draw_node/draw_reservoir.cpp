@@ -7,7 +7,7 @@ DrawReservoir::DrawReservoir(double x, double y) : DrawNode(x, y) {
 }
 
 NodeType DrawReservoir::type() {
-    return NodeType::Reservoir;
+  return NodeType::Reservoir;
 }
 
 void DrawReservoir::initialize() {

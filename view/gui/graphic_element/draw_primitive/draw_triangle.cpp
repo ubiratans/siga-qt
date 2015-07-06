@@ -17,7 +17,7 @@ bool DrawTriangle::hitTest(double x, double y) {
 
   bool b1 = sign(point, m_vertex_vec[0], m_vertex_vec[1]) < 0.0;
   bool b2 = sign(point, m_vertex_vec[1], m_vertex_vec[2]) < 0.0;
-  bool b3 = sign(point, m_vertex_vec[2], m_vertex_vec[3]) < 0.0;
+  bool b3 = sign(point, m_vertex_vec[2], m_vertex_vec[0]) < 0.0;
 
   return ((b1 == b2) && (b2 == b3));
 }

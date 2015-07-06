@@ -15,6 +15,13 @@ elseif((NOT ${m64} STREQUAL TRUE) AND (NOT ${m64} STREQUAL FALSE))
     message(FATAL_ERROR "ERROR: Use -Dm64=TRUE/FALSE")
 endif()
 
+if(NOT DEFINED qt_path)
+	message(FATAL_ERROR "ERROR: you need to specify qt path! (Ex: -Dqt_path=C:\Qt\5.3\msvc2013_64_opengl)\\")
+endif()
+
+set(CMAKE_PREFIX_PATH "${qt_path}")
+
+
 # Set current platform
 message(STATUS "> Identifying platform...")
 
@@ -24,19 +31,13 @@ if(WINDOWS OR WIN32)
 	if(NOT DEFINED vs_compiler_path)
 		message(FATAL_ERROR "ERROR: you need to pass the visual studio 2013 compiler bin path. (Ex: -Dvs_compiler_path=C:/Program Files (x86)/Microsoft Visual Studio 12.0/VC/bin")
 	endif()
-	
-	if(NOT DEFINED qt_path)
-		message(FATAL_ERROR "ERROR: you need to specify qt path! (Ex: -Dqt_path=C:\Qt\5.3\msvc2013_64_opengl)\\")
-	endif()
-	
+		
 	if(${m64} STREQUAL TRUE)
 		set(vs_compiler_path "${vs_compiler_path}/amd64/")
 	else()
 		set(vs_compiler_path "${vs_compiler_path}/amd64_x86/")
 	endif()
-	
-	set(CMAKE_PREFIX_PATH "${qt_path}")
-	
+
 	set(cxx_compiler "${vs_compiler_path}cl.exe")
         set(compiler_flags "/EHsc")
 
@@ -97,7 +98,12 @@ set(CMAKE_CXX_COMPILER CACHE ${cxx_compiler} FORCE)
 set(CMAKE_CXX_FLAGS "${compiler_flags} ${CMAKE_CXX_FLAGS}")
 		
 # Find QT5 package
-find_package(Qt5 REQUIRED COMPONENTS Widgets Gui Core LinguistTools OpenGL)
+#TODO: Find a way to retrieve the qt lib from the qt_path specified and not the qt lib present in system environment variable
+set(Qt5_DIR ${qt_path})
+find_package(Qt5 5.5 REQUIRED NO_SYSTEM_ENVIRONMENT_PATH COMPONENTS Widgets Gui Core LinguistTools OpenGL)
+
+get_target_property(Qt5WidgetsLocation Qt5::Widgets LOCATION)
+message(STATUS "*** ${Qt5WidgetsLocation}")
 
 # include custom functions
 include(cmake/functions.cmake)

@@ -9,10 +9,13 @@
 #include "view/gui/canvas/shaders/vertex_shader.h"
 
 MainCanvas::MainCanvas(/*CanvasElementManager &manager,*/CoordinateSystem &coord_system, QWidget *parent)
-  : QGLWidget(QGLFormat(QGL::DoubleBuffer), parent), m_coordinate_system(&coord_system)
+  : QOpenGLWidget(parent), m_coordinate_system(&coord_system)
 {
+  m_background_color = QColor(Qt::white);
+
+  setMouseTracking(true);
   makeCurrent();
-  bool x = initializeOpenGLFunctions();
+
   m_pos_x = -10.0;
   m_pos_y = -15.0;
   m_max_width = m_coordinate_system->width() * 10;
@@ -28,27 +31,40 @@ const CoordinateSystem * const MainCanvas::coordinateSystem() {
   return m_coordinate_system;
 }
 
+std::pair<double, double> MainCanvas::screenToCoordinateSystem(int x, int y) {
+  double x_world = m_pos_x + m_coordinate_system->width() / (m_max_width * m_zoom) * x;
+  double y_world = m_pos_y + m_coordinate_system->height() / (m_max_height * m_zoom) * y;
+
+  return std::make_pair(x_world, y_world);
+}
+
 QGLShaderProgram& MainCanvas::shaderProgram() {
   return m_shader_program;
 }
 
 void MainCanvas::initializeGL() {
-  bool load_shaders = m_shader_program.addShaderFromSourceCode(QGLShader::Vertex, kCanvasVertexShader)
-      && m_shader_program.addShaderFromSourceCode(QGLShader::Fragment, kCanvasFragmentShader)
-      && m_shader_program.link();
+  if (initializeOpenGLFunctions()) {
+    bool load_shaders = m_shader_program.addShaderFromSourceCode(QGLShader::Vertex, kCanvasVertexShader)
+        && m_shader_program.addShaderFromSourceCode(QGLShader::Fragment, kCanvasFragmentShader)
+        && m_shader_program.link();
 
-  if (load_shaders) {
-    qglClearColor(QColor(Qt::white));
+    if (load_shaders) {
+      glClearColor(m_background_color.redF(), m_background_color.greenF(), m_background_color.blueF(), m_background_color.alphaF());
+    }
   }
 }
 
 void MainCanvas::paintGL() {
+  if (!isValid()) {
+    return;
+  }
+
   glClear(GL_COLOR_BUFFER_BIT);
 
   m_shader_program.bind();
   m_shader_program.setUniformValue("projection_matrix", m_projection_matrix);
 
-  GraphicNode *node = new GraphicNode(
+  node = new GraphicNode(
         0,
         GraphicNodeStruct(NodeType::Reservoir,
                           0.0,
@@ -60,8 +76,8 @@ void MainCanvas::paintGL() {
                           )
         );
 
-  node->setRotation(150.0);
-  node->setScale(2.0);
+  node->setRotation(90.0);
+  node->setScale(5.0);
 
 
   GraphicNode *node2 = new GraphicNode(
@@ -87,6 +103,8 @@ void MainCanvas::paintGL() {
                           1.0
                           )
         );
+
+  node3->setScale(3.0);
 
   GraphicNode *node4 = new GraphicNode(
         0,
@@ -139,6 +157,21 @@ void MainCanvas::resizeGL(int width, int height) {
   m_projection_matrix.ortho(m_pos_x, right, m_pos_y, top, 0.0, 1.0);
 
   glViewport(0, 0, width-1, height-1);
+}
+
+void MainCanvas::mouseMoveEvent(QMouseEvent *event) {
+  GLubyte data[4];
+  std::pair< double, double > current_world_pos = screenToCoordinateSystem(event->x(), event->y());
+
+  glReadPixels(event->x(), event->y(), 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+  QColor color_pos = QColor(data[0], data[1], data[2]);
+
+  if (node->hitTest(current_world_pos.first, current_world_pos.second)) {
+    // perform hit tests
+    int x = 10;
+    x = 11;
+  }
 }
 
 bool MainCanvas::hasToUpdateVertices() {

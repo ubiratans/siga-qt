@@ -61,6 +61,16 @@ void DrawNode::setScale(double scale) {
   m_has_to_compute_vertices = true;
 }
 
+bool DrawNode::hitTest(double x, double y) {
+  for (auto primitive : m_primitives_vector) {
+    if (primitive->hitTest(x, y)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 bool DrawNode::verticesUpdated() {
   return !m_has_to_compute_vertices;
 }

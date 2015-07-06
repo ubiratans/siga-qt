@@ -22,6 +22,8 @@ public:
   void setScale(double value);
   void setRotation(double value);
 
+  bool hitTest(double x, double y);
+
   NodeType type();
   bool setType(NodeType type);
 
