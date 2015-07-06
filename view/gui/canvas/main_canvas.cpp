@@ -17,14 +17,18 @@ MainCanvas::MainCanvas(/*CanvasElementManager &manager,*/CoordinateSystem &coord
   makeCurrent();
 
   m_pos_x = -10.0;
-  m_pos_y = -15.0;
+  m_pos_y = -10.0;
   m_max_width = m_coordinate_system->width() * 10;
   m_max_height = m_coordinate_system->height() * 10;
   m_zoom = 1.0;
   m_projection_matrix.setToIdentity();
+
+  m_timer = new QTimer(this);
+  connect(m_timer, SIGNAL(timeout()), this, SLOT(emitMouseMoveSignal()));
 }
 
 MainCanvas::~MainCanvas() {
+  delete m_timer;
 }
 
 const CoordinateSystem * const MainCanvas::coordinateSystem() {
@@ -33,7 +37,7 @@ const CoordinateSystem * const MainCanvas::coordinateSystem() {
 
 std::pair<double, double> MainCanvas::screenToCoordinateSystem(int x, int y) {
   double x_world = m_pos_x + m_coordinate_system->width() / (m_max_width * m_zoom) * x;
-  double y_world = m_pos_y + m_coordinate_system->height() / (m_max_height * m_zoom) * y;
+  double y_world = m_pos_y + m_coordinate_system->height() / (m_max_height * m_zoom) * (height() - 1 - y);
 
   return std::make_pair(x_world, y_world);
 }
@@ -66,7 +70,7 @@ void MainCanvas::paintGL() {
 
   node = new GraphicNode(
         0,
-        GraphicNodeStruct(NodeType::Reservoir,
+        GraphicNodeStruct(NodeType::Basin,
                           0.0,
                           2.0,
                           m_coordinate_system->width() / (m_max_width * m_zoom),
@@ -76,7 +80,6 @@ void MainCanvas::paintGL() {
                           )
         );
 
-  node->setRotation(90.0);
   node->setScale(5.0);
 
 
@@ -163,7 +166,10 @@ void MainCanvas::mouseMoveEvent(QMouseEvent *event) {
   GLubyte data[4];
   std::pair< double, double > current_world_pos = screenToCoordinateSystem(event->x(), event->y());
 
-  glReadPixels(event->x(), event->y(), 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+  m_last_mouse_pos_x = current_world_pos.first;
+  m_last_mouse_pos_y = current_world_pos.second;
+
+  m_timer->start(1);
 
   QColor color_pos = QColor(data[0], data[1], data[2]);
 
@@ -176,6 +182,11 @@ void MainCanvas::mouseMoveEvent(QMouseEvent *event) {
 
 bool MainCanvas::hasToUpdateVertices() {
   return m_has_to_recalculate_elements_vertices;
+}
+
+void MainCanvas::emitMouseMoveSignal() {
+  emit(mouseMoved(m_last_mouse_pos_x, m_last_mouse_pos_y));
+  m_timer->stop();
 }
 
 void MainCanvas::drawElement(GraphicElement &element, bool recalculate_vertices) {

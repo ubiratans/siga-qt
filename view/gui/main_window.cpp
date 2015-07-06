@@ -31,6 +31,10 @@ void MainWindow::createStatusBar() {
   m_status_bar->showMessage("Latitude: xx.xx Longitude: xx.xx", 0);
 }
 
+void MainWindow::connectEvents() {
+  connect(m_main_canvas, SIGNAL(mouseMoved(double,double)), this, SLOT(updateStatusbar(double,double)));
+}
+
 void MainWindow::init() {
   TranslationUtils::loadDefaultTranslation();
   TranslationUtils::setDefaultContext(kMainWindowStringsContext);
@@ -39,6 +43,15 @@ void MainWindow::init() {
   createMenu();
   createCanvas();
   createStatusBar();
+
+  connectEvents();
+}
+
+void MainWindow::updateStatusbar(double x, double y) {
+  QCoreApplication::processEvents();
+  QString message = QString("Latitude: %1 @ Longitude: %2").arg(QString::number(y), QString::number(x));
+
+  m_status_bar->showMessage(message, 0);
 }
 
 void MainWindow::createCanvas() {

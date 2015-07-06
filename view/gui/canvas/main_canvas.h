@@ -5,6 +5,7 @@
 #include <QOpenGLFunctions_2_0>
 #include <QOpenGLWidget>
 #include <QtOpenGL/qgl.h>
+#include <QTimer>
 
 #include "view/gui/graphic_element/graphic_element.h"
 #include "view/gui/graphic_element/draw_primitive/draw_primitive.h"
@@ -58,6 +59,8 @@ private:
 
   double m_pos_x; //!< Represents the coord. system axis X of the screen position (viewport) of x = 0 (in screen coordinates)
   double m_pos_y; //!< Represents the coord. system axis Y of the screen position (viewport) of y = 0 (in screen coordinates)
+  double m_last_mouse_pos_x;
+  double m_last_mouse_pos_y;
   double m_max_width;
   double m_max_height;
 
@@ -66,8 +69,15 @@ private:
   bool m_has_to_recalculate_elements_vertices;
 
   QColor m_background_color;
+  QTimer *m_timer;
 
   GraphicNode *node;
+
+signals:
+  void mouseMoved(double x_world, double y_world);
+
+private slots:
+  void emitMouseMoveSignal();
 };
 
 #endif
