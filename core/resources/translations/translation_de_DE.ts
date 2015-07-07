@@ -2,6 +2,17 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="de_DE">
 <context>
+    <name>CORE_COORDINATE_SYSTEM_STRINGS</name>
+    <message>
+        <source>Wgs84_X_AXIS_NAME</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wgs84_Y_AXIS_NAME</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CORE_ELEMENT_STRINGS</name>
     <message>
         <source>ELEMENT</source>

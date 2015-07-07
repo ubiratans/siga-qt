@@ -1,10 +1,20 @@
 #include "core/coordinate_system/coordinate_system.h"
 
+#include "core/coordinate_system/coordinate_system_strings.h"
+
 CoordinateSystem::CoordinateSystem() {
 }
 
 std::string CoordinateSystem::name() {
   return m_name;
+}
+
+const std::string CoordinateSystem::xAxisName() const {
+  return kTkCoordinateSystemWgs84XaxisName;
+}
+
+const std::string CoordinateSystem::yAxisName() const {
+  return kTkCoordinateSystemWgs84YaxisName;
 }
 
 double CoordinateSystem::top() {

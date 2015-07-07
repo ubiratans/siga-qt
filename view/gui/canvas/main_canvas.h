@@ -65,6 +65,7 @@ private:
   double m_max_height;
 
   double m_zoom;
+  int m_mouse_move_refresh_msecs;
 
   bool m_has_to_recalculate_elements_vertices;
 

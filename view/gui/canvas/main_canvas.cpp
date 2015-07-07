@@ -23,6 +23,8 @@ MainCanvas::MainCanvas(/*CanvasElementManager &manager,*/CoordinateSystem &coord
   m_zoom = 1.0;
   m_projection_matrix.setToIdentity();
 
+  m_mouse_move_refresh_msecs = 4;
+
   m_timer = new QTimer(this);
   connect(m_timer, SIGNAL(timeout()), this, SLOT(emitMouseMoveSignal()));
 }
@@ -169,7 +171,7 @@ void MainCanvas::mouseMoveEvent(QMouseEvent *event) {
   m_last_mouse_pos_x = current_world_pos.first;
   m_last_mouse_pos_y = current_world_pos.second;
 
-  m_timer->start(1);
+  m_timer->start(m_mouse_move_refresh_msecs);
 
   QColor color_pos = QColor(data[0], data[1], data[2]);
 

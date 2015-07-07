@@ -1,6 +1,7 @@
 #include "view/gui/main_window.h"
 #include "view/gui/main_window_ui.h"
 
+#include "core/coordinate_system/coordinate_system_strings.h"
 #include "view/gui/main_window_strings.h"
 #include "view/gui/translation_utils.h"
 #include "utils/coordinate_system/coordinate_system_utils.h"
@@ -28,7 +29,7 @@ void MainWindow::createStatusBar() {
   m_status_bar = new QStatusBar(this);
   setStatusBar(m_status_bar);
 
-  m_status_bar->showMessage("Latitude: xx.xx Longitude: xx.xx", 0);
+  updateStatusbar(0.0, 0.0);
 }
 
 void MainWindow::connectEvents() {
@@ -49,7 +50,14 @@ void MainWindow::init() {
 
 void MainWindow::updateStatusbar(double x, double y) {
   QCoreApplication::processEvents();
-  QString message = QString("Latitude: %1 @ Longitude: %2").arg(QString::number(y), QString::number(x));
+  const CoordinateSystem * const coord_system = m_main_canvas->coordinateSystem();
+
+  QString message = QString(
+        TranslationUtils::translate(kCoordinateSystemStringsContext, coord_system->xAxisName()) +
+        ": %1 @ " +
+        TranslationUtils::translate(kCoordinateSystemStringsContext, coord_system->yAxisName()) +
+        ": %2"
+        ).arg(QString::number(x), QString::number(y));
 
   m_status_bar->showMessage(message, 0);
 }

@@ -9,6 +9,9 @@ public:
 
   std::string name();
 
+  const std::string xAxisName() const;
+  const std::string yAxisName() const;
+
   double top();
   double bottom();
   double left();
