@@ -29,7 +29,20 @@ void MainWindow::createStatusBar() {
   m_status_bar = new QStatusBar(this);
   setStatusBar(m_status_bar);
 
-  updateStatusbar(0.0, 0.0);
+  const CoordinateSystem * const coord_system = m_main_canvas->coordinateSystem();
+
+  m_mouse_x_position_widget = new StatusBarWidget(this);
+  m_mouse_y_position_widget = new StatusBarWidget(this);
+
+  m_mouse_x_position_widget->setHeaderText(TranslationUtils::translate(kCoordinateSystemStringsContext, coord_system->xAxisName()));
+  m_mouse_y_position_widget->setHeaderText(TranslationUtils::translate(kCoordinateSystemStringsContext, coord_system->yAxisName()));
+
+  m_status_bar->addWidget(m_mouse_x_position_widget, 0);
+  m_status_bar->addWidget(m_mouse_y_position_widget, 0);
+
+  m_status_bar->setContentsMargins(0, 0, 0, 0);
+
+  //updateStatusbar(0.0, 0.0);
 }
 
 void MainWindow::connectEvents() {
@@ -50,16 +63,9 @@ void MainWindow::init() {
 
 void MainWindow::updateStatusbar(double x, double y) {
   QCoreApplication::processEvents();
-  const CoordinateSystem * const coord_system = m_main_canvas->coordinateSystem();
 
-  QString message = QString(
-        TranslationUtils::translate(kCoordinateSystemStringsContext, coord_system->xAxisName()) +
-        ": %1 @ " +
-        TranslationUtils::translate(kCoordinateSystemStringsContext, coord_system->yAxisName()) +
-        ": %2"
-        ).arg(QString::number(x), QString::number(y));
-
-  m_status_bar->showMessage(message, 0);
+  m_mouse_x_position_widget->setContentText(QString::number(x));
+  m_mouse_y_position_widget->setContentText(QString::number(y));
 }
 
 void MainWindow::createCanvas() {

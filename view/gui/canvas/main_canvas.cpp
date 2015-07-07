@@ -18,8 +18,12 @@ MainCanvas::MainCanvas(/*CanvasElementManager &manager,*/CoordinateSystem &coord
 
   m_pos_x = -10.0;
   m_pos_y = -10.0;
+
+  // TODO: Improve the calculation of max width and height
+  // Hint: maybe the screen resolution can be taken into account
   m_max_width = m_coordinate_system->width() * 10;
   m_max_height = m_coordinate_system->height() * 10;
+
   m_zoom = 1.0;
   m_projection_matrix.setToIdentity();
 
