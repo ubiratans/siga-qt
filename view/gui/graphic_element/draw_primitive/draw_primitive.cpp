@@ -4,7 +4,10 @@ DrawPrimitive::DrawPrimitive(double x, double y, QColor &color, QColor &border_c
   : m_x(x), m_y(y), m_color(color), m_border_color(border_color), m_label(label),
     m_scale(1.0), m_rotation_angle_degree(0.0), m_enable_border(true)
 {
+  m_border_color_selection = QColor(Qt::blue);
 
+  m_color_selection = m_color;
+  m_color_selection.setAlphaF(0.65);
 }
 
 DrawPrimitive::~DrawPrimitive() {
@@ -32,6 +35,30 @@ void DrawPrimitive::setBorderColor(int r, int g, int b, int alpha) {
 
 void DrawPrimitive::setBorderColor(QColor &color) {
   m_border_color = color;
+}
+
+QColor DrawPrimitive::selectionColor() {
+  return m_color_selection;
+}
+
+void DrawPrimitive::setSelectionColor(int r, int g, int b, int alpha) {
+  m_color_selection = QColor(r, g, b, alpha);
+}
+
+void DrawPrimitive::setSelectionColor(QColor &color) {
+  m_color_selection = color;
+}
+
+QColor DrawPrimitive::selectionBorderColor() {
+  return m_border_color_selection;
+}
+
+void DrawPrimitive::setSelectionBorderColor(int r, int g, int b, int alpha) {
+  m_border_color_selection = QColor(r, g, b, alpha);
+}
+
+void DrawPrimitive::setSelectionBorderColor(QColor &color) {
+  m_border_color_selection = color;
 }
 
 GLenum DrawPrimitive::glPrimitive() {

@@ -31,6 +31,20 @@ MainCanvas::MainCanvas(/*CanvasElementManager &manager,*/CoordinateSystem &coord
 
   m_timer = new QTimer(this);
   connect(m_timer, SIGNAL(timeout()), this, SLOT(emitMouseMoveSignal()));
+
+  node = new GraphicNode(
+        0,
+        GraphicNodeStruct(NodeType::Reservoir,
+                          0.0,
+                          2.0,
+                          m_coordinate_system->width() / (m_max_width * m_zoom),
+                          m_coordinate_system->height() / (m_max_height * m_zoom),
+                          0.0,
+                          1.0
+                          )
+        );
+
+  node->calculateVertices();
 }
 
 MainCanvas::~MainCanvas() {
@@ -54,6 +68,9 @@ QGLShaderProgram& MainCanvas::shaderProgram() {
 
 void MainCanvas::initializeGL() {
   if (initializeOpenGLFunctions()) {
+    glEnable (GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     bool load_shaders = m_shader_program.addShaderFromSourceCode(QGLShader::Vertex, kCanvasVertexShader)
         && m_shader_program.addShaderFromSourceCode(QGLShader::Fragment, kCanvasFragmentShader)
         && m_shader_program.link();
@@ -74,87 +91,11 @@ void MainCanvas::paintGL() {
   m_shader_program.bind();
   m_shader_program.setUniformValue("projection_matrix", m_projection_matrix);
 
-  node = new GraphicNode(
-        0,
-        GraphicNodeStruct(NodeType::Basin,
-                          0.0,
-                          2.0,
-                          m_coordinate_system->width() / (m_max_width * m_zoom),
-                          m_coordinate_system->height() / (m_max_height * m_zoom),
-                          0.0,
-                          1.0
-                          )
-        );
-
-  node->setScale(5.0);
-
-
-  GraphicNode *node2 = new GraphicNode(
-        0,
-        GraphicNodeStruct(NodeType::Basin,
-                          8.0,
-                          2.0,
-                          m_coordinate_system->width() / (m_max_width * m_zoom),
-                          m_coordinate_system->height() / (m_max_height * m_zoom),
-                          0.0,
-                          1.0
-                          )
-        );
-
-  GraphicNode *node3 = new GraphicNode(
-        0,
-        GraphicNodeStruct(NodeType::Demand,
-                          16.0,
-                          2.0,
-                          m_coordinate_system->width() / (m_max_width * m_zoom),
-                          m_coordinate_system->height() / (m_max_height * m_zoom),
-                          0.0,
-                          1.0
-                          )
-        );
-
-  node3->setScale(3.0);
-
-  GraphicNode *node4 = new GraphicNode(
-        0,
-        GraphicNodeStruct(NodeType::Junction,
-                          24.0,
-                          2.0,
-                          m_coordinate_system->width() / (m_max_width * m_zoom),
-                          m_coordinate_system->height() / (m_max_height * m_zoom),
-                          0.0,
-                          1.0
-                          )
-        );
-
-  GraphicNode *node5 = new GraphicNode(
-        0,
-        GraphicNodeStruct(NodeType::Lake,
-                          32.0,
-                          2.0,
-                          m_coordinate_system->width() / (m_max_width * m_zoom),
-                          m_coordinate_system->height() / (m_max_height * m_zoom),
-                          0.0,
-                          1.0
-                          )
-        );
-
-  node->calculateVertices();
-  node2->calculateVertices();
-  node3->calculateVertices();
-  node4->calculateVertices();
-  node5->calculateVertices();
-
   drawElement(*node);
-  drawElement(*node2);
-  drawElement(*node3);
-  drawElement(*node4);
-  drawElement(*node5);
 
   m_shader_program.release();
 
   glFlush();
-  //
 }
 
 void MainCanvas::resizeGL(int width, int height) {
@@ -180,9 +121,18 @@ void MainCanvas::mouseMoveEvent(QMouseEvent *event) {
   QColor color_pos = QColor(data[0], data[1], data[2]);
 
   if (node->hitTest(current_world_pos.first, current_world_pos.second)) {
-    // perform hit tests
-    int x = 10;
-    x = 11;
+    if (!node->isSelected()) {
+      // perform hit tests
+      node->setSelected(true);
+
+      update();
+    }
+  }
+
+  else if (node->isSelected()) {
+    node->setSelected(false);
+
+    update();
   }
 }
 
@@ -201,16 +151,17 @@ void MainCanvas::drawElement(GraphicElement &element, bool recalculate_vertices)
   }
 
   for (auto primitive : element.primitives()) {
-    drawPrimitive(*primitive);
+    drawPrimitive(*primitive, element.isSelected());
   }
 }
 
-void MainCanvas::drawPrimitive(DrawPrimitive &primitive) {
+void MainCanvas::drawPrimitive(DrawPrimitive &primitive, bool selected) {
   m_shader_program.setAttributeArray("vertex", primitive.vertexVector().constData());
   m_shader_program.enableAttributeArray("vertex");
 
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  m_shader_program.setUniformValue("color", primitive.color());
+  QColor color = (!selected? primitive.color(): primitive.selectionColor());
+  m_shader_program.setUniformValue("color", color);
 
   // draw the vertices
   glDrawArrays(primitive.glPrimitive(), 0, primitive.vertexVector().size());
@@ -221,8 +172,9 @@ void MainCanvas::drawPrimitive(DrawPrimitive &primitive) {
     glGetFloatv(GL_LINE_WIDTH, &line_width);
 
     // TODO: Add the border_width to DrawPrimitive
-    glLineWidth(line_width /*+ 0.5*/);
-    m_shader_program.setUniformValue("color", primitive.borderColor());
+    glLineWidth(line_width + 0.5);
+    color = (!selected? primitive.borderColor(): primitive.selectionBorderColor());
+    m_shader_program.setUniformValue("color", color);
     glDrawArrays(primitive.glBorderPrimitive(), 0, primitive.vertexVector().size());
 
     glLineWidth(line_width);

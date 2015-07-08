@@ -22,6 +22,9 @@ public:
 
   bool verticesUpdated();
 
+  void setSelected(bool selected);
+  bool isSelected();
+
   double scale();
   virtual void setScale(double value) = 0;
 
@@ -41,6 +44,8 @@ protected:
 
   double m_scale; //!< Defines element's draw proportion
   double m_rotation;
+
+  bool m_selected;
 };
 
 #endif

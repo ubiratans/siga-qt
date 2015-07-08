@@ -41,7 +41,7 @@ public:
 
 protected:
   void drawElement(GraphicElement &element, bool recalculate_vertices = false);
-  void drawPrimitive(DrawPrimitive &primitive);
+  void drawPrimitive(DrawPrimitive &primitive, bool selected);
 
   virtual void initializeGL(); //!< initialize context
   virtual void paintGL(); //!< called when the widget needs to be redrawn

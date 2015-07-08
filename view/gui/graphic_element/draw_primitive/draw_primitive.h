@@ -20,6 +20,14 @@ public:
   void setBorderColor(int r, int g, int b, int alpha);
   void setBorderColor(QColor &color);
 
+  QColor selectionColor();
+  void setSelectionColor(int r, int g, int b, int alpha);
+  void setSelectionColor(QColor &color);
+
+  QColor selectionBorderColor();
+  void setSelectionBorderColor(int r, int g, int b, int alpha);
+  void setSelectionBorderColor(QColor &color);
+
   virtual bool hitTest(double x, double y) = 0;
   virtual bool hitTest(QRect &rect) = 0;
 
@@ -69,6 +77,9 @@ protected:
 
   QColor m_color;
   QColor m_border_color;
+
+  QColor m_color_selection;
+  QColor m_border_color_selection;
 
   QString m_label;
   bool m_enable_border;

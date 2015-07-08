@@ -15,6 +15,8 @@ GraphicNode::GraphicNode(ElementID id, GraphicNodeStruct st)
   m_scale = st.m_scale;
   m_rotation = st.m_rotation;
 
+  m_selected = false;
+
   initialize(st.m_type);
 }
 
