@@ -3,14 +3,21 @@
 
 #include "view/gui/graphic_element/draw_node/draw_node.h"
 
+class DrawRectangle;
+
 class DrawDemand : public DrawNode {
 public:
   DrawDemand(double x, double y);
 
   NodeType type();
 
+  int height();
+  int width();
+
 protected:
   void initialize();
+
+  DrawRectangle *m_rectangle;
 };
 
 #endif

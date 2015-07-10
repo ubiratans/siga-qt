@@ -26,8 +26,16 @@ bool DrawTriangle::hitTest(QRect &rect) {
   return false;
 }
 
-void DrawTriangle::setEdgeSize(double size) {
+void DrawTriangle::setEdgeSize(int size) {
   m_size = size;
+}
+
+int DrawTriangle::edgeSize() {
+  return m_size * m_scale;
+}
+
+int DrawTriangle::height() {
+  return m_size * m_scale * 0.866025;
 }
 
 double DrawTriangle::sign(QVector3D &point, QVector3D &triangle_vertex, QVector3D &triangle_vertex_2) {

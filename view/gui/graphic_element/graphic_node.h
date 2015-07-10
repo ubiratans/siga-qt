@@ -17,6 +17,9 @@ public:
   double x();
   double y();
 
+  int height();
+  int width();
+
   void setPosition(double x, double y); //!< position in world coordinates
 
   void setScale(double value);

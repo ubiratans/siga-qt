@@ -11,13 +11,15 @@ public:
   bool hitTest(double x, double y);
   bool hitTest(QRect &rect);
 
-  void setEdgeSize(double size);
+  void setEdgeSize(int size); //!< set the size of triangle's edges, in pixels
+  int edgeSize();
+  int height();
 
 private:
   double sign(QVector3D &point, QVector3D &triangle_vertex, QVector3D &triangle_vertex_2);
   virtual void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion);
 
-  double m_size;
+  int m_size;
 };
 
 #endif

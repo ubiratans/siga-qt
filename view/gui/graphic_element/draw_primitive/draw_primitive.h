@@ -58,7 +58,7 @@ public:
   void applyTransformations();
 
 protected:
-    virtual void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion) = 0;
+  virtual void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion) = 0;
 
   QMatrix4x4 m_model_view_matrix;
 

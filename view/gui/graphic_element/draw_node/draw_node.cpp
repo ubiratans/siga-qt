@@ -7,9 +7,16 @@ DrawNode::DrawNode(double x, double y) : m_x(x), m_y(y), m_has_to_compute_vertic
 }
 
 DrawNode::~DrawNode() {
+  clearAndDeletePrimitives();
+}
+
+void DrawNode::clearAndDeletePrimitives() {
   for (auto primitive : m_primitives_vector) {
     delete primitive;
   }
+
+  m_primitives_vector.clear();
+  m_primitives_info.clear();
 }
 
 double DrawNode::x() {

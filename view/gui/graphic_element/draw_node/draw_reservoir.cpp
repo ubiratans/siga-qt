@@ -2,8 +2,16 @@
 
 #include "view/gui/graphic_element/draw_primitive/draw_triangle.h"
 
-DrawReservoir::DrawReservoir(double x, double y) : DrawNode(x, y) {
+DrawReservoir::DrawReservoir(double x, double y) : DrawNode(x, y), m_triangle(nullptr) {
   initialize();
+}
+
+int DrawReservoir::height() {
+  return m_triangle->height();
+}
+
+int DrawReservoir::width() {
+  return m_triangle->edgeSize();
 }
 
 NodeType DrawReservoir::type() {
@@ -11,13 +19,13 @@ NodeType DrawReservoir::type() {
 }
 
 void DrawReservoir::initialize() {
-    m_primitives_vector.clear();
+  clearAndDeletePrimitives();
 
-    DrawTriangle *triangle = new DrawTriangle(m_x, m_y, QColor(70, 180, 255), QColor(Qt::black));
-    DrawNodePrimitiveSt st;
+  m_triangle = new DrawTriangle(m_x, m_y, QColor(70, 180, 255), QColor(Qt::black));
+  DrawNodePrimitiveSt st;
 
-    st.m_draw_primitive = triangle;
+  st.m_draw_primitive = m_triangle;
 
-    m_primitives_vector.push_back(triangle);
-    m_primitives_info.push_back(st);
+  m_primitives_vector.push_back(m_triangle);
+  m_primitives_info.push_back(st);
 }

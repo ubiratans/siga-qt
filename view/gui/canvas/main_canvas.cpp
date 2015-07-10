@@ -20,7 +20,7 @@ MainCanvas::MainCanvas(/*CanvasElementManager &manager,*/CoordinateSystem &coord
   m_pos_y = -10.0;
 
   // TODO: Improve the calculation of max width and height
-  // Hint: maybe the screen resolution can be taken into account
+  // Hint: perharps the screen resolution can be taken into account
   m_max_width = m_coordinate_system->width() * 10;
   m_max_height = m_coordinate_system->height() * 10;
 
@@ -44,6 +44,7 @@ MainCanvas::MainCanvas(/*CanvasElementManager &manager,*/CoordinateSystem &coord
                           )
         );
 
+  node->setScale(1.0);
   node->calculateVertices();
 }
 
@@ -62,22 +63,22 @@ std::pair<double, double> MainCanvas::screenToCoordinateSystem(int x, int y) {
   return std::make_pair(x_world, y_world);
 }
 
+std::pair<int, int> MainCanvas::coordinateSystemToScreen(double x, double y) {
+  int x_screen = (x - m_pos_x) / (m_coordinate_system->width() / (m_max_width * m_zoom));
+  int y_screen = height() - ((y - m_pos_y) / (m_coordinate_system->height() / (m_max_height * m_zoom)));
+
+  return std::make_pair(x_screen, y_screen);
+}
+
 QGLShaderProgram& MainCanvas::shaderProgram() {
   return m_shader_program;
 }
 
 void MainCanvas::initializeGL() {
   if (initializeOpenGLFunctions()) {
-    glEnable (GL_BLEND);
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     bool load_shaders = m_shader_program.addShaderFromSourceCode(QGLShader::Vertex, kCanvasVertexShader)
         && m_shader_program.addShaderFromSourceCode(QGLShader::Fragment, kCanvasFragmentShader)
         && m_shader_program.link();
-
-    if (load_shaders) {
-      glClearColor(m_background_color.redF(), m_background_color.greenF(), m_background_color.blueF(), m_background_color.alphaF());
-    }
   }
 }
 
@@ -86,16 +87,26 @@ void MainCanvas::paintGL() {
     return;
   }
 
-  glClear(GL_COLOR_BUFFER_BIT);
+  QPainter painter(this);
 
-  m_shader_program.bind();
-  m_shader_program.setUniformValue("projection_matrix", m_projection_matrix);
+  drawElements(painter);
 
-  drawElement(*node);
+  QFont font;
+  font.setPointSize(10);
+  font.setFamily("Monospace");
 
-  m_shader_program.release();
+  painter.setFont(font);
 
-  glFlush();
+  std::pair< int, int > pos = coordinateSystemToScreen(node->x(), node->y());
+
+  QRect rect(pos.first - node->width()*4,
+             pos.second + node->height() + font.pixelSize() + font.pointSize(),
+             node->width()*8,
+             font.pointSize() + 4);
+
+  painter.drawText(rect, Qt::AlignCenter, "N1");
+
+  painter.end();
 }
 
 void MainCanvas::resizeGL(int width, int height) {
@@ -105,8 +116,6 @@ void MainCanvas::resizeGL(int width, int height) {
   double top = m_pos_y + (m_coordinate_system->height() / (m_max_height * m_zoom)) * (height - 1);
 
   m_projection_matrix.ortho(m_pos_x, right, m_pos_y, top, 0.0, 1.0);
-
-  glViewport(0, 0, width-1, height-1);
 }
 
 void MainCanvas::mouseMoveEvent(QMouseEvent *event) {
@@ -117,8 +126,6 @@ void MainCanvas::mouseMoveEvent(QMouseEvent *event) {
   m_last_mouse_pos_y = current_world_pos.second;
 
   m_timer->start(m_mouse_move_refresh_msecs);
-
-  QColor color_pos = QColor(data[0], data[1], data[2]);
 
   if (node->hitTest(current_world_pos.first, current_world_pos.second)) {
     if (!node->isSelected()) {
@@ -143,6 +150,28 @@ bool MainCanvas::hasToUpdateVertices() {
 void MainCanvas::emitMouseMoveSignal() {
   emit(mouseMoved(m_last_mouse_pos_x, m_last_mouse_pos_y));
   m_timer->stop();
+}
+
+void MainCanvas::drawElements(QPainter &painter) {
+  painter.beginNativePainting();
+    glViewport(0, 0, width()-1, height()-1);
+
+    glClearColor(m_background_color.redF(), m_background_color.greenF(), m_background_color.blueF(), m_background_color.alphaF());
+    glClear(GL_COLOR_BUFFER_BIT);
+    glEnable (GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    m_shader_program.bind();
+    m_shader_program.setUniformValue("projection_matrix", m_projection_matrix);
+
+    // TODO: iterate through all elements and draw each one
+    drawElement(*node);
+
+    m_shader_program.release();
+
+    glFlush();
+  painter.endNativePainting();
+
 }
 
 void MainCanvas::drawElement(GraphicElement &element, bool recalculate_vertices) {
@@ -179,6 +208,8 @@ void MainCanvas::drawPrimitive(DrawPrimitive &primitive, bool selected) {
 
     glLineWidth(line_width);
   }
+
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
   m_shader_program.disableAttributeArray("vertex");
 }

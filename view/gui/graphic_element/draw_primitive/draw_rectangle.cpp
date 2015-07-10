@@ -22,7 +22,15 @@ bool DrawRectangle::hitTest(QRect &rect) {
   return false;
 }
 
-void DrawRectangle::setDimensions(double width_pixels, double height_pixels) {
+int DrawRectangle::width() {
+  return m_width * m_scale;
+}
+
+int DrawRectangle::height() {
+  return m_height * m_scale;
+}
+
+void DrawRectangle::setDimensions(int width_pixels, int height_pixels) {
   m_width = width_pixels;
   m_height = height_pixels;
 }

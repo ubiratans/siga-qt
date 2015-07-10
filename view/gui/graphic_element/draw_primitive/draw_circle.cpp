@@ -3,7 +3,7 @@
 #include <cmath>
 #include <QLineF>
 
-DrawCircle::DrawCircle(double x, double y, QColor color, QColor border_color, double radius)
+DrawCircle::DrawCircle(double x, double y, QColor color, QColor border_color, int radius)
   : DrawPrimitive(x, y, color, border_color), m_radius(radius)
 {
   m_gl_primitive = GL_TRIANGLE_FAN;
@@ -14,8 +14,12 @@ DrawCircle::~DrawCircle() {
 
 }
 
-void DrawCircle::setRadius(double radius) {
+void DrawCircle::setRadius(int radius) {
   m_radius = radius;
+}
+
+int DrawCircle::radius() {
+  return m_radius * m_scale;
 }
 
 bool DrawCircle::hitTest(double x, double y) {

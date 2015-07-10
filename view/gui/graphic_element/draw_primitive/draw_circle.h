@@ -5,10 +5,11 @@
 
 class DrawCircle : public DrawPrimitive {
 public:
-  DrawCircle(double x, double y, QColor color, QColor border_color, double radius = 10.0);
+  DrawCircle(double x, double y, QColor color, QColor border_color, int radius = 10);
   virtual ~DrawCircle();
 
-  void setRadius(double radius);
+  void setRadius(int radius);
+  int radius();
 
   bool hitTest(double x, double y);
   bool hitTest(QRect &rect);

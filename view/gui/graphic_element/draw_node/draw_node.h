@@ -38,6 +38,9 @@ public:
   void setRotation(double angle);
   void setScale(double scale);
 
+  virtual int height() = 0; //!< return the height in pixels
+  virtual int width() = 0; //!< return the width values in pixels
+
   virtual NodeType type() = 0;
 
   virtual bool hitTest(double x, double y);
@@ -48,6 +51,8 @@ public:
 
   //!< The main intent of this method is to compute all the primitives vertices, but it also calls the initialize() if is needed.
   void calculateVertices(double screen_world_width_proportion, double screen_world_height_proportion);
+
+  void clearAndDeletePrimitives();
 
 protected:
   //!< This method will instantiate the primitives and fill the primitives vector, it SHALL not calculate the primitive vertices.

@@ -34,7 +34,23 @@ void GraphicNode::calculateVertices(double screen_world_width_proportion, double
     m_last_screen_world_height_ratio = screen_world_height_proportion;
   //}
 
-  m_has_to_calculate_primitives_vertices = false;
+    m_has_to_calculate_primitives_vertices = false;
+}
+
+double GraphicNode::x() {
+  return m_x;
+}
+
+double GraphicNode::y() {
+  return m_y;
+}
+
+int GraphicNode::height() {
+  return m_draw_node->height();
+}
+
+int GraphicNode::width() {
+  return m_draw_node->width();
 }
 
 void GraphicNode::setPosition(double x, double y) {

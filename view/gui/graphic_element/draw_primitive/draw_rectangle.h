@@ -11,13 +11,16 @@ public:
   bool hitTest(double x, double y);
   bool hitTest(QRect &rect);
 
-  void setDimensions(double width_pixels, double height_pixels);
+  int width();
+  int height();
+
+  void setDimensions(int width_pixels, int height_pixels);
 
 private:
-    virtual void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion);
+  virtual void computeVertices(double screen_world_width_proportion, double screen_world_height_proportion);
 
-  double m_width;
-  double m_height;
+  int m_width;
+  int m_height;
 };
 
 #endif

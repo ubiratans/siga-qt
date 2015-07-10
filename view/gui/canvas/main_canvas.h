@@ -2,10 +2,11 @@
 #define VIEW_CANVAS_MAIN_CANVAS_H
 
 #include <QGLShaderProgram>
-#include <QOpenGLFunctions_2_0>
+#include <QOpenGLFunctions_3_0>
 #include <QOpenGLWidget>
 #include <QtOpenGL/qgl.h>
 #include <QTimer>
+#include <QPainter>
 
 #include "view/gui/graphic_element/graphic_element.h"
 #include "view/gui/graphic_element/draw_primitive/draw_primitive.h"
@@ -14,7 +15,7 @@ class CoordinateSystem;
 class CanvasElementManager;
 class GraphicNode;
 
-class MainCanvas : public QOpenGLWidget, protected QOpenGLFunctions_2_0 {
+class MainCanvas : public QOpenGLWidget, protected QOpenGLFunctions_3_0 {
   Q_OBJECT
 
 public:
@@ -25,8 +26,10 @@ public:
   void setCoordinateSystem(CoordinateSystem &coord_system);
 
   std::pair< double, double > screenToCoordinateSystem(int x, int y);
+  std::pair<int, int> coordinateSystemToScreen(double x, double y);
 
   QGLShaderProgram& shaderProgram();
+
   /*double zoom();
   bool setZoom(double value);
 
@@ -40,6 +43,7 @@ public:
   void redraw();*/
 
 protected:
+  void drawElements(QPainter &painter);
   void drawElement(GraphicElement &element, bool recalculate_vertices = false);
   void drawPrimitive(DrawPrimitive &primitive, bool selected);
 

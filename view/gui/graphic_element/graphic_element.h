@@ -22,6 +22,9 @@ public:
 
   bool verticesUpdated();
 
+  virtual int height() = 0; //!< height of the element in pixels
+  virtual int width() = 0; //!< width of the element in pixels
+
   void setSelected(bool selected);
   bool isSelected();
 

@@ -70,5 +70,14 @@ void MainWindow::updateStatusbar(double x, double y) {
 
 void MainWindow::createCanvas() {
   m_main_canvas = new MainCanvas(*(CoordinateSystemUtils::instance().coordinateSystem(CoordinateSystemID::WGS_84)), this);
+
+ /* QSurfaceFormat format;
+  format.setProfile(QSurfaceFormat::OpenGLContextProfile::CompatibilityProfile);
+  QSurfaceFormat::setDefaultFormat(format);
+
+  m_main_canvas->setFormat(format);*/
+
   setCentralWidget(m_main_canvas);
+
+
 }
