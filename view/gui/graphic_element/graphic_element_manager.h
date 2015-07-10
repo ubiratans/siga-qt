@@ -29,6 +29,8 @@ public:
   bool setNodeType(GraphicNode &node, NodeType new_type);
   bool setNodeType(ElementID node_id, NodeType new_type);
 
+  ElementManager& elementManager();
+
   //bool setLinkType(GraphicLink &link, LinkType new_type);
   //bool setLinkType(ElementID link_id, LinkType new_type);
 
