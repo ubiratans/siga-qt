@@ -6,9 +6,19 @@
 
 class Command {
 public:
-  virtual bool doCommand() = 0;
-  virtual void undoCommand() = 0;
-  virtual bool redoCommand() = 0;
+  Command();
+
+  bool doCommand();
+  void undoCommand();
+  bool redoCommand();
+
+protected:
+  virtual bool doCommandImpl() = 0;
+  virtual void undoCommandImpl() = 0;
+  virtual bool redoCommandImpl() = 0;
+
+  bool m_can_undo;
+  bool m_executed;
 };
 
 #endif

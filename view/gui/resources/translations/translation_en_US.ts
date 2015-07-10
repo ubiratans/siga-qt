@@ -5,10 +5,18 @@
     <name>MainWindow</name>
     <message>
         <location filename="../../forms/main_window.ui" line="20"/>
-        <location filename="../../forms/statusbar_widget.ui" line="20"/>
         <location filename="../../main_window_ui.h" line="60"/>
         <source>MainWindow</source>
         <translation>FUNCEME SIGA</translation>
+    </message>
+</context>
+<context>
+    <name>StatusBarWidget</name>
+    <message>
+        <location filename="../../forms/statusbar_widget.ui" line="43"/>
+        <location filename="../../statusbar_widget_ui.h" line="77"/>
+        <source>Header</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -4,20 +4,19 @@
 #include "view/gui/graphic_element/command/command.h"
 #include "view/gui/graphic_element/graphic_element_manager.h"
 
-struct CommandAddNodeStruct;
-
 class CommandAdd : public Command {
 public:
-  CommandAdd(GraphicElementManager &manager, NodeType type, double x, double y);
+  CommandAdd(GraphicElementManager &manager, GraphicNodeStruct graphic_node_struct);
   virtual ~CommandAdd();
 
-  bool doCommand();
-  bool redoCommand();
-  void undoCommand();
+protected:
+  bool doCommandImpl();
+  bool redoCommandImpl();
+  void undoCommandImpl();
 
 private:
-  GraphicElementManager *m_manager;
-  CommandAddNodeStruct *m_added_node_struct;
+  GraphicElementManager *m_manager{nullptr};
+  GraphicNodeStruct *m_graphic_node_struct{nullptr};
 };
 
 #endif
