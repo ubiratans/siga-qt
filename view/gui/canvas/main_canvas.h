@@ -22,7 +22,7 @@ public:
   explicit MainCanvas(GraphicElementManager &manager, CoordinateSystem &coord_system, QWidget *parent = 0);
   virtual ~MainCanvas();
 
-  const CoordinateSystem* const coordinateSystem(); //!< getter of canvas's coordinate system
+  CoordinateSystem* coordinateSystem(); //!< getter of canvas's coordinate system
   void setCoordinateSystem(CoordinateSystem &coord_system);
 
   std::pair< double, double > screenToCoordinateSystem(int x, int y);

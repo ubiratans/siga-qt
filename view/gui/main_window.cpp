@@ -66,8 +66,21 @@ void MainWindow::init() {
 void MainWindow::updateStatusbar(double x, double y) {
   QCoreApplication::processEvents();
 
-  m_mouse_x_position_widget->setContentText(QString::number(x));
-  m_mouse_y_position_widget->setContentText(QString::number(y));
+  if (x > m_main_canvas->coordinateSystem()->right() || x < m_main_canvas->coordinateSystem()->left()) {
+    m_mouse_x_position_widget->setContentText("--");
+  }
+
+  else {
+    m_mouse_x_position_widget->setContentText(QString::number(x));
+  }
+
+  if (y > m_main_canvas->coordinateSystem()->top() || y < m_main_canvas->coordinateSystem()->bottom()) {
+    m_mouse_x_position_widget->setContentText("--");
+  }
+
+  else {
+    m_mouse_y_position_widget->setContentText(QString::number(y));
+  }
 }
 
 void MainWindow::createCanvas() {

@@ -40,7 +40,7 @@ void MainCanvas::initWindowPositionAndSize() {
 }
 
 void MainCanvas::initZoomAndMatrix() {
-  m_zoom = 10.0;
+  m_zoom = 1.0;
   m_projection_matrix.setToIdentity();
 }
 
@@ -56,7 +56,7 @@ MainCanvas::~MainCanvas() {
   delete m_command_manager;
 }
 
-const CoordinateSystem * const MainCanvas::coordinateSystem() {
+CoordinateSystem * MainCanvas::coordinateSystem() {
   return m_coordinate_system;
 }
 
