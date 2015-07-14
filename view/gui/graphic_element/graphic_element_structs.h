@@ -4,6 +4,18 @@
 #include "core/element/element_structs.h"
 
 struct GraphicNodeStruct {
+  GraphicNodeStruct(GraphicNodeStruct &st) {
+    m_type = st.m_type;
+    m_x = st.m_x;
+    m_y = st.m_y;
+
+    m_rotation = st.m_rotation;
+    m_scale = st.m_scale;
+
+    m_screen_world_height_ratio = st.m_screen_world_height_ratio;
+    m_screen_world_width_ratio = st.m_screen_world_width_ratio;
+  }
+
   GraphicNodeStruct(
       NodeType type,
       double node_world_x,

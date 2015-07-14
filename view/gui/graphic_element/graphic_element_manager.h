@@ -19,7 +19,7 @@ public:
   GraphicElementManager(ElementManager &element_manager);
   virtual ~GraphicElementManager();
 
-  GraphicNode& addNode(NodeType type, double world_x, double world_y);
+  GraphicNode& addNode(GraphicNodeStruct &st);
   bool removeElement(ElementID id);
 
   bool getGraphicNode(ElementID id, GraphicNode* &result);
@@ -28,6 +28,9 @@ public:
 
   bool setNodeType(GraphicNode &node, NodeType new_type);
   bool setNodeType(ElementID node_id, NodeType new_type);
+
+  std::map< ElementID, GraphicNode* >& graphicNodesMap();
+  std::map< ElementID, GraphicElement* >& graphicElementsMap();
 
   ElementManager& elementManager();
 

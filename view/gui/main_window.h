@@ -5,6 +5,10 @@
 
 #include "view/gui/canvas/main_canvas.h"
 #include "view/gui/statusbar_widget.h"
+#include "view/gui/graphic_element/graphic_element_manager.h"
+
+class ElementManager;
+class GraphicElementManager;
 
 namespace Ui {
 class MainWindow;
@@ -36,6 +40,9 @@ private:
   StatusBarWidget *m_mouse_x_position_widget;
   StatusBarWidget *m_mouse_y_position_widget;
   MainCanvas *m_main_canvas;
+
+  ElementManager m_element_manager;
+  GraphicElementManager *m_graphic_element_manager{nullptr};
 
 private slots:
   void updateStatusbar(double x, double y);

@@ -7,11 +7,15 @@
 #include "view/gui/graphic_element/graphic_node.h"
 #include "view/gui/canvas/shaders/fragment_shader.h"
 #include "view/gui/canvas/shaders/vertex_shader.h"
+#include "view/gui/graphic_element/graphic_element_manager.h"
+#include "view/gui/graphic_element/command/command_manager.h"
+#include "view/gui/graphic_element/command/command_add.h"
 
-MainCanvas::MainCanvas(/*CanvasElementManager &manager,*/CoordinateSystem &coord_system, QWidget *parent)
-  : QOpenGLWidget(parent), m_coordinate_system(&coord_system)
+MainCanvas::MainCanvas(GraphicElementManager &manager, CoordinateSystem &coord_system, QWidget *parent)
+  : QOpenGLWidget(parent), m_coordinate_system(&coord_system), m_graphic_element_manager(&manager)
 {
   m_background_color = QColor(Qt::white);
+  m_command_manager = new CommandManager(32);
 
   setMouseTracking(true);
   makeCurrent();
@@ -31,25 +35,11 @@ MainCanvas::MainCanvas(/*CanvasElementManager &manager,*/CoordinateSystem &coord
 
   m_timer = new QTimer(this);
   connect(m_timer, SIGNAL(timeout()), this, SLOT(emitMouseMoveSignal()));
-
-  node = new GraphicNode(
-        0,
-        GraphicNodeStruct(NodeType::Reservoir,
-                          0.0,
-                          2.0,
-                          m_coordinate_system->width() / (m_max_width * m_zoom),
-                          m_coordinate_system->height() / (m_max_height * m_zoom),
-                          0.0,
-                          1.0
-                          )
-        );
-
-  node->setScale(1.0);
-  node->calculateVertices();
 }
 
 MainCanvas::~MainCanvas() {
   delete m_timer;
+  delete m_command_manager;
 }
 
 const CoordinateSystem * const MainCanvas::coordinateSystem() {
@@ -91,7 +81,7 @@ void MainCanvas::paintGL() {
 
   drawElements(painter);
 
-  QFont font;
+  /*QFont font;
   font.setPointSize(10);
   font.setFamily("Monospace");
 
@@ -106,7 +96,7 @@ void MainCanvas::paintGL() {
 
   painter.drawText(rect, Qt::AlignCenter, "N1");
 
-  painter.end();
+  painter.end();*/
 }
 
 void MainCanvas::resizeGL(int width, int height) {
@@ -127,18 +117,37 @@ void MainCanvas::mouseMoveEvent(QMouseEvent *event) {
 
   m_timer->start(m_mouse_move_refresh_msecs);
 
-  if (node->hitTest(current_world_pos.first, current_world_pos.second)) {
-    if (!node->isSelected()) {
-      // perform hit tests
-      node->setSelected(true);
+  for (auto it : m_graphic_element_manager->graphicElementsMap()) {
+    GraphicElement *graphic_element = it.second;
+
+    if (graphic_element->hitTest(current_world_pos.first, current_world_pos.second)) {
+      if (!graphic_element->isSelected()) {
+        // perform hit tests
+        graphic_element->setSelected(true);
+
+        update();
+      }
+    }
+
+    else if (graphic_element->isSelected()) {
+      graphic_element->setSelected(false);
 
       update();
     }
   }
+}
 
-  else if (node->isSelected()) {
-    node->setSelected(false);
+void MainCanvas::mouseDoubleClickEvent(QMouseEvent *event) {
+  std::pair<double, double> pos = screenToCoordinateSystem(event->x(), event->y());
+  GraphicNodeStruct st(
+                      NodeType::Reservoir,
+                       pos.first,
+                       pos.second,
+                       m_coordinate_system->width() / (m_max_width * m_zoom),
+                       m_coordinate_system->height() / (m_max_height * m_zoom)
+                       );
 
+  if (m_command_manager->execute(new CommandAdd(*m_graphic_element_manager, st))) {
     update();
   }
 }
@@ -164,14 +173,16 @@ void MainCanvas::drawElements(QPainter &painter) {
     m_shader_program.bind();
     m_shader_program.setUniformValue("projection_matrix", m_projection_matrix);
 
-    // TODO: iterate through all elements and draw each one
-    drawElement(*node);
+    for (auto it : m_graphic_element_manager->graphicElementsMap()) {
+      GraphicElement *graphic_element = it.second;
+
+      drawElement(*graphic_element);
+    }
 
     m_shader_program.release();
 
     glFlush();
   painter.endNativePainting();
-
 }
 
 void MainCanvas::drawElement(GraphicElement &element, bool recalculate_vertices) {

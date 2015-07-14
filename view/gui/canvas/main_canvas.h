@@ -12,14 +12,14 @@
 #include "view/gui/graphic_element/draw_primitive/draw_primitive.h"
 
 class CoordinateSystem;
-class CanvasElementManager;
-class GraphicNode;
+class GraphicElementManager;
+class CommandManager;
 
 class MainCanvas : public QOpenGLWidget, protected QOpenGLFunctions_3_0 {
   Q_OBJECT
 
 public:
-  explicit MainCanvas(CoordinateSystem &coord_system, QWidget *parent = 0);
+  explicit MainCanvas(GraphicElementManager &manager, CoordinateSystem &coord_system, QWidget *parent = 0);
   virtual ~MainCanvas();
 
   const CoordinateSystem* const coordinateSystem(); //!< getter of canvas's coordinate system
@@ -52,6 +52,7 @@ protected:
   virtual void resizeGL(int width, int height); //!< called when the widget is resized
 
   void mouseMoveEvent(QMouseEvent *event);
+  void mouseDoubleClickEvent(QMouseEvent * event);
 
   bool hasToUpdateVertices();
 
@@ -68,6 +69,9 @@ private:
   double m_max_width;
   double m_max_height;
 
+  CommandManager *m_command_manager;
+  GraphicElementManager *m_graphic_element_manager;
+
   double m_zoom;
   int m_mouse_move_refresh_msecs;
 
@@ -75,8 +79,6 @@ private:
 
   QColor m_background_color;
   QTimer *m_timer;
-
-  GraphicNode *node;
 
 signals:
   void mouseMoved(double x_world, double y_world);

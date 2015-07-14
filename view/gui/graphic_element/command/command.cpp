@@ -33,3 +33,7 @@ bool Command::redoCommand() {
 
   return ret;
 }
+
+bool Command::canUndo() {
+  return m_can_undo;
+}

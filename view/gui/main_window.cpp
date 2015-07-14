@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 MainWindow::~MainWindow() {
+  delete m_graphic_element_manager;
+
   delete m_ui;
 }
 
@@ -69,15 +71,10 @@ void MainWindow::updateStatusbar(double x, double y) {
 }
 
 void MainWindow::createCanvas() {
-  m_main_canvas = new MainCanvas(*(CoordinateSystemUtils::instance().coordinateSystem(CoordinateSystemID::WGS_84)), this);
-
- /* QSurfaceFormat format;
-  format.setProfile(QSurfaceFormat::OpenGLContextProfile::CompatibilityProfile);
-  QSurfaceFormat::setDefaultFormat(format);
-
-  m_main_canvas->setFormat(format);*/
+  m_graphic_element_manager = new GraphicElementManager(m_element_manager);
+  m_main_canvas = new MainCanvas(*m_graphic_element_manager,
+                                 *(CoordinateSystemUtils::instance().coordinateSystem(CoordinateSystemID::WGS_84)),
+                                 this);
 
   setCentralWidget(m_main_canvas);
-
-
 }
