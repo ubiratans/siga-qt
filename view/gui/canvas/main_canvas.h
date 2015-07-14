@@ -30,7 +30,7 @@ public:
 
   QGLShaderProgram& shaderProgram();
 
-  /*double zoom();
+  double zoom();
   bool setZoom(double value);
 
   bool zoomOut();
@@ -39,7 +39,7 @@ public:
   bool zoomIn();
   double maxZoomIn();
 
-  bool fitNetwork();
+  /*bool fitNetwork();
   void redraw();*/
 
 protected:
@@ -53,12 +53,19 @@ protected:
 
   void mouseMoveEvent(QMouseEvent *event);
   void mouseDoubleClickEvent(QMouseEvent * event);
+  void wheelEvent(QWheelEvent *event);
 
   bool hasToUpdateVertices();
-
-  QGLShaderProgram m_shader_program;
+  double coordinateWidthPerPixel();
+  double coordinateHeightPerPixel();
+  void calculateProjectionMatrix(int width, int height);
 
 private:
+  void init();
+  void initWindowPositionAndSize();
+  void initZoomAndMatrix();
+  void initTimer();
+
   CoordinateSystem *m_coordinate_system;
   QMatrix4x4 m_projection_matrix;
 
@@ -79,6 +86,8 @@ private:
 
   QColor m_background_color;
   QTimer *m_timer;
+
+  QGLShaderProgram m_shader_program;
 
 signals:
   void mouseMoved(double x_world, double y_world);

@@ -14,12 +14,22 @@
 MainCanvas::MainCanvas(GraphicElementManager &manager, CoordinateSystem &coord_system, QWidget *parent)
   : QOpenGLWidget(parent), m_coordinate_system(&coord_system), m_graphic_element_manager(&manager)
 {
+  init();
+}
+
+void MainCanvas::init() {
   m_background_color = QColor(Qt::white);
   m_command_manager = new CommandManager(32);
 
   setMouseTracking(true);
   makeCurrent();
 
+  initZoomAndMatrix();
+  initWindowPositionAndSize();
+  initTimer();
+}
+
+void MainCanvas::initWindowPositionAndSize() {
   m_pos_x = -10.0;
   m_pos_y = -10.0;
 
@@ -27,10 +37,14 @@ MainCanvas::MainCanvas(GraphicElementManager &manager, CoordinateSystem &coord_s
   // Hint: perharps the screen resolution can be taken into account
   m_max_width = m_coordinate_system->width() * 10;
   m_max_height = m_coordinate_system->height() * 10;
+}
 
-  m_zoom = 1.0;
+void MainCanvas::initZoomAndMatrix() {
+  m_zoom = 10.0;
   m_projection_matrix.setToIdentity();
+}
 
+void MainCanvas::initTimer() {
   m_mouse_move_refresh_msecs = 4;
 
   m_timer = new QTimer(this);
@@ -46,22 +60,64 @@ const CoordinateSystem * const MainCanvas::coordinateSystem() {
   return m_coordinate_system;
 }
 
+double MainCanvas::coordinateWidthPerPixel() {
+  double value = (m_coordinate_system->width() * m_zoom) / (m_max_width);
+
+  return value;
+}
+
+double MainCanvas::coordinateHeightPerPixel() {
+  return (m_coordinate_system->height() * m_zoom) / (m_max_height);
+}
+
 std::pair<double, double> MainCanvas::screenToCoordinateSystem(int x, int y) {
-  double x_world = m_pos_x + m_coordinate_system->width() / (m_max_width * m_zoom) * x;
-  double y_world = m_pos_y + m_coordinate_system->height() / (m_max_height * m_zoom) * (height() - 1 - y);
+  double x_world = m_pos_x + coordinateWidthPerPixel()  * x;
+  double y_world = m_pos_y + coordinateHeightPerPixel() * (height() - 1 - y);
 
   return std::make_pair(x_world, y_world);
 }
 
 std::pair<int, int> MainCanvas::coordinateSystemToScreen(double x, double y) {
-  int x_screen = (x - m_pos_x) / (m_coordinate_system->width() / (m_max_width * m_zoom));
-  int y_screen = height() - ((y - m_pos_y) / (m_coordinate_system->height() / (m_max_height * m_zoom)));
+  int x_screen = (x - m_pos_x) / coordinateWidthPerPixel();
+  int y_screen = height() - ((y - m_pos_y) / coordinateHeightPerPixel());
 
   return std::make_pair(x_screen, y_screen);
 }
 
 QGLShaderProgram& MainCanvas::shaderProgram() {
   return m_shader_program;
+}
+
+double MainCanvas::zoom() {
+  return m_zoom;
+}
+
+bool MainCanvas::setZoom(double value) {
+  if (value <= maxZoomOut() && value >= maxZoomIn()) {
+    m_zoom = value;
+
+    m_has_to_recalculate_elements_vertices = true;
+
+    return true;
+  }
+
+  return false;
+}
+
+bool MainCanvas::zoomOut() {
+  return setZoom(m_zoom * 1.1);
+}
+
+double MainCanvas::maxZoomOut() {
+  return 5.0;
+}
+
+bool MainCanvas::zoomIn() {
+  return setZoom(m_zoom / 1.1);
+}
+
+double MainCanvas::maxZoomIn() {
+  return 0.5;
 }
 
 void MainCanvas::initializeGL() {
@@ -100,10 +156,14 @@ void MainCanvas::paintGL() {
 }
 
 void MainCanvas::resizeGL(int width, int height) {
+  calculateProjectionMatrix(width, height);
+}
+
+void MainCanvas::calculateProjectionMatrix(int width, int height) {
   m_projection_matrix.setToIdentity();
 
-  double right = m_pos_x + (m_coordinate_system->width() / (m_max_width * m_zoom)) * (width - 1);
-  double top = m_pos_y + (m_coordinate_system->height() / (m_max_height * m_zoom)) * (height - 1);
+  double right = m_pos_x + (coordinateWidthPerPixel()) * (width - 1);
+  double top = m_pos_y + (coordinateHeightPerPixel()) * (height - 1);
 
   m_projection_matrix.ortho(m_pos_x, right, m_pos_y, top, 0.0, 1.0);
 }
@@ -143,8 +203,8 @@ void MainCanvas::mouseDoubleClickEvent(QMouseEvent *event) {
                       NodeType::Reservoir,
                        pos.first,
                        pos.second,
-                       m_coordinate_system->width() / (m_max_width * m_zoom),
-                       m_coordinate_system->height() / (m_max_height * m_zoom)
+                       coordinateWidthPerPixel(),
+                       coordinateHeightPerPixel()
                        );
 
   if (m_command_manager->execute(new CommandAdd(*m_graphic_element_manager, st))) {
@@ -152,9 +212,40 @@ void MainCanvas::mouseDoubleClickEvent(QMouseEvent *event) {
   }
 }
 
+void MainCanvas::wheelEvent(QWheelEvent *event) {
+  std::pair< double, double > current_world_pos = screenToCoordinateSystem(event->x(), event->y());
+
+  if (event->delta() < 0) {
+      if (zoomOut()) {
+        std::pair< double, double > new_world_pos = screenToCoordinateSystem(event->x(), event->y());
+
+        m_pos_x = m_pos_x + (current_world_pos.first - new_world_pos.first);
+        m_pos_y = m_pos_y + (current_world_pos.second - new_world_pos.second);
+
+        // TODO: Put the calculateProjectionMatrix inside setZoom
+        calculateProjectionMatrix(width(), height());
+
+        update();
+      }
+  }
+
+  else if (zoomIn()) {
+    std::pair< double, double > new_world_pos = screenToCoordinateSystem(event->x(), event->y());
+
+    m_pos_x = m_pos_x + (current_world_pos.first - new_world_pos.first);
+    m_pos_y = m_pos_y + (current_world_pos.second - new_world_pos.second);
+
+    // TODO: Put the calculateProjectionMatrix inside setZoom
+    calculateProjectionMatrix(width(), height());
+
+    update();
+  }
+}
+
 bool MainCanvas::hasToUpdateVertices() {
   return m_has_to_recalculate_elements_vertices;
 }
+
 
 void MainCanvas::emitMouseMoveSignal() {
   emit(mouseMoved(m_last_mouse_pos_x, m_last_mouse_pos_y));
@@ -176,8 +267,14 @@ void MainCanvas::drawElements(QPainter &painter) {
     for (auto it : m_graphic_element_manager->graphicElementsMap()) {
       GraphicElement *graphic_element = it.second;
 
+      if (m_has_to_recalculate_elements_vertices) {
+        graphic_element->calculateVertices(coordinateWidthPerPixel(), coordinateHeightPerPixel());
+      }
+
       drawElement(*graphic_element);
     }
+
+    m_has_to_recalculate_elements_vertices = false;
 
     m_shader_program.release();
 
