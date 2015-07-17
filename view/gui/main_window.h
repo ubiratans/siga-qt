@@ -39,13 +39,15 @@ private:
   QStatusBar *m_status_bar;
   StatusBarWidget *m_mouse_x_position_widget;
   StatusBarWidget *m_mouse_y_position_widget;
+  StatusBarWidget *m_zoom_widget;
   MainCanvas *m_main_canvas;
 
   ElementManager m_element_manager;
   GraphicElementManager *m_graphic_element_manager{nullptr};
 
 private slots:
-  void updateStatusbar(double x, double y);
+  void updatePositionStatusbar(double x, double y);
+  void updateZoomStatusbar(double zoom);
 };
 
 #endif

@@ -19,6 +19,7 @@ MainCanvas::MainCanvas(GraphicElementManager &manager, CoordinateSystem &coord_s
 
 void MainCanvas::init() {
   m_background_color = QColor(Qt::white);
+  m_off_limits_background_color = QColor(Qt::gray);
   m_command_manager = new CommandManager(32);
 
   setMouseTracking(true);
@@ -35,8 +36,12 @@ void MainCanvas::initWindowPositionAndSize() {
 
   // TODO: Improve the calculation of max width and height
   // Hint: perharps the screen resolution can be taken into account
-  m_max_width = m_coordinate_system->width() * 10;
-  m_max_height = m_coordinate_system->height() * 10;
+  QRect rec = QApplication::desktop()->screenGeometry();
+  int height = rec.height();
+  int width = rec.width();
+
+  m_max_width = std::max(width * 4.0, m_coordinate_system->width() * 10);
+  m_max_height = std::max(height * 4.0, m_coordinate_system->height() * 10);
 }
 
 void MainCanvas::initZoomAndMatrix() {
@@ -56,18 +61,20 @@ MainCanvas::~MainCanvas() {
   delete m_command_manager;
 }
 
-CoordinateSystem * MainCanvas::coordinateSystem() {
+CoordinateSystem* MainCanvas::coordinateSystem() {
   return m_coordinate_system;
 }
 
 double MainCanvas::coordinateWidthPerPixel() {
-  double value = (m_coordinate_system->width() * m_zoom) / (m_max_width);
+  double value = (m_coordinate_system->width()) / (m_max_width * m_zoom);
 
   return value;
 }
 
 double MainCanvas::coordinateHeightPerPixel() {
-  return (m_coordinate_system->height() * m_zoom) / (m_max_height);
+  double value = (m_coordinate_system->height()) / (m_max_height * m_zoom);
+
+  return value;
 }
 
 std::pair<double, double> MainCanvas::screenToCoordinateSystem(int x, int y) {
@@ -93,10 +100,12 @@ double MainCanvas::zoom() {
 }
 
 bool MainCanvas::setZoom(double value) {
-  if (value <= maxZoomOut() && value >= maxZoomIn()) {
+  if (value != 0.0 && value >= maxZoomOut() && value <= maxZoomIn()) {
     m_zoom = value;
 
     m_has_to_recalculate_elements_vertices = true;
+
+    emitZoomUpdateSignal();
 
     return true;
   }
@@ -105,19 +114,19 @@ bool MainCanvas::setZoom(double value) {
 }
 
 bool MainCanvas::zoomOut() {
-  return setZoom(m_zoom * 1.1);
-}
-
-double MainCanvas::maxZoomOut() {
-  return 5.0;
-}
-
-bool MainCanvas::zoomIn() {
   return setZoom(m_zoom / 1.1);
 }
 
+double MainCanvas::maxZoomOut() {
+  return 0.125;
+}
+
+bool MainCanvas::zoomIn() {
+  return setZoom(m_zoom * 1.1);
+}
+
 double MainCanvas::maxZoomIn() {
-  return 0.5;
+  return 10.0;
 }
 
 void MainCanvas::initializeGL() {
@@ -199,13 +208,22 @@ void MainCanvas::mouseMoveEvent(QMouseEvent *event) {
 
 void MainCanvas::mouseDoubleClickEvent(QMouseEvent *event) {
   std::pair<double, double> pos = screenToCoordinateSystem(event->x(), event->y());
+
+  if (pos.first < m_coordinate_system->left() ||
+      pos.first > m_coordinate_system->right() ||
+      pos.second < m_coordinate_system->bottom() ||
+      pos.second > m_coordinate_system->top())
+  {
+    return;
+  }
+
   GraphicNodeStruct st(
-                      NodeType::Reservoir,
-                       pos.first,
-                       pos.second,
-                       coordinateWidthPerPixel(),
-                       coordinateHeightPerPixel()
-                       );
+        NodeType::Reservoir,
+        pos.first,
+        pos.second,
+        coordinateWidthPerPixel(),
+        coordinateHeightPerPixel()
+        );
 
   if (m_command_manager->execute(new CommandAdd(*m_graphic_element_manager, st))) {
     update();
@@ -213,20 +231,21 @@ void MainCanvas::mouseDoubleClickEvent(QMouseEvent *event) {
 }
 
 void MainCanvas::wheelEvent(QWheelEvent *event) {
+  // TODO: implement a special zoom when the mouse is over an element, that zoom should consider the distance from the center of the element to the current mouse position
   std::pair< double, double > current_world_pos = screenToCoordinateSystem(event->x(), event->y());
 
   if (event->delta() < 0) {
-      if (zoomOut()) {
-        std::pair< double, double > new_world_pos = screenToCoordinateSystem(event->x(), event->y());
+    if (zoomOut()) {
+      std::pair< double, double > new_world_pos = screenToCoordinateSystem(event->x(), event->y());
 
-        m_pos_x = m_pos_x + (current_world_pos.first - new_world_pos.first);
-        m_pos_y = m_pos_y + (current_world_pos.second - new_world_pos.second);
+      m_pos_x = m_pos_x + (current_world_pos.first - new_world_pos.first);
+      m_pos_y = m_pos_y + (current_world_pos.second - new_world_pos.second);
 
-        // TODO: Put the calculateProjectionMatrix inside setZoom
-        calculateProjectionMatrix(width(), height());
+      // TODO: Put the calculateProjectionMatrix inside setZoom
+      calculateProjectionMatrix(width(), height());
 
-        update();
-      }
+      update();
+    }
   }
 
   else if (zoomIn()) {
@@ -252,17 +271,27 @@ void MainCanvas::emitMouseMoveSignal() {
   m_timer->stop();
 }
 
+void MainCanvas::emitZoomUpdateSignal() {
+  emit(zoomUpdated(m_zoom));
+}
+
 void MainCanvas::drawElements(QPainter &painter) {
   painter.beginNativePainting();
     glViewport(0, 0, width()-1, height()-1);
 
-    glClearColor(m_background_color.redF(), m_background_color.greenF(), m_background_color.blueF(), m_background_color.alphaF());
+    glClearColor(m_off_limits_background_color.redF(),
+                 m_off_limits_background_color.greenF(),
+                 m_off_limits_background_color.blueF(),
+                 m_off_limits_background_color.alphaF());
     glClear(GL_COLOR_BUFFER_BIT);
+
     glEnable (GL_BLEND);
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     m_shader_program.bind();
     m_shader_program.setUniformValue("projection_matrix", m_projection_matrix);
+
+    drawPaintArea();
 
     for (auto it : m_graphic_element_manager->graphicElementsMap()) {
       GraphicElement *graphic_element = it.second;
@@ -290,6 +319,26 @@ void MainCanvas::drawElement(GraphicElement &element, bool recalculate_vertices)
   for (auto primitive : element.primitives()) {
     drawPrimitive(*primitive, element.isSelected());
   }
+}
+
+void MainCanvas::drawPaintArea() {
+  QVector< QVector3D > vertices;
+
+  vertices.push_back(QVector3D(m_coordinate_system->left(), m_coordinate_system->bottom(), 0.0));
+  vertices.push_back(QVector3D(m_coordinate_system->left(), m_coordinate_system->top(), 0.0));
+  vertices.push_back(QVector3D(m_coordinate_system->right(), m_coordinate_system->top(), 0.0));
+  vertices.push_back(QVector3D(m_coordinate_system->right(), m_coordinate_system->bottom(), 0.0));
+
+  m_shader_program.setAttributeArray("vertex", vertices.constData());
+  m_shader_program.enableAttributeArray("vertex");
+
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  m_shader_program.setUniformValue("color", m_background_color);
+
+  // draw the vertices
+  glDrawArrays(GL_QUADS, 0, vertices.size());
+
+  m_shader_program.disableAttributeArray("vertex");
 }
 
 void MainCanvas::drawPrimitive(DrawPrimitive &primitive, bool selected) {

@@ -35,12 +35,16 @@ void MainWindow::createStatusBar() {
 
   m_mouse_x_position_widget = new StatusBarWidget(this);
   m_mouse_y_position_widget = new StatusBarWidget(this);
+  m_zoom_widget = new StatusBarWidget(this);
 
   m_mouse_x_position_widget->setHeaderText(TranslationUtils::translate(kCoordinateSystemStringsContext, coord_system->xAxisName()));
   m_mouse_y_position_widget->setHeaderText(TranslationUtils::translate(kCoordinateSystemStringsContext, coord_system->yAxisName()));
+  m_zoom_widget->setHeaderText("Zoom");
+  m_zoom_widget->setContentText("1");
 
   m_status_bar->addWidget(m_mouse_x_position_widget, 0);
   m_status_bar->addWidget(m_mouse_y_position_widget, 0);
+  m_status_bar->addWidget(m_zoom_widget, 0);
 
   m_status_bar->setContentsMargins(0, 0, 0, 0);
 
@@ -48,7 +52,8 @@ void MainWindow::createStatusBar() {
 }
 
 void MainWindow::connectEvents() {
-  connect(m_main_canvas, SIGNAL(mouseMoved(double,double)), this, SLOT(updateStatusbar(double,double)));
+  connect(m_main_canvas, SIGNAL(mouseMoved(double,double)), this, SLOT(updatePositionStatusbar(double,double)));
+  connect(m_main_canvas, SIGNAL(zoomUpdated(double)), this, SLOT(updateZoomStatusbar(double)));
 }
 
 void MainWindow::init() {
@@ -63,7 +68,7 @@ void MainWindow::init() {
   connectEvents();
 }
 
-void MainWindow::updateStatusbar(double x, double y) {
+void MainWindow::updatePositionStatusbar(double x, double y) {
   QCoreApplication::processEvents();
 
   if (x > m_main_canvas->coordinateSystem()->right() || x < m_main_canvas->coordinateSystem()->left()) {
@@ -71,16 +76,21 @@ void MainWindow::updateStatusbar(double x, double y) {
   }
 
   else {
-    m_mouse_x_position_widget->setContentText(QString::number(x));
+    m_mouse_x_position_widget->setContentText(QString::number(x, 'f', 2));
   }
 
   if (y > m_main_canvas->coordinateSystem()->top() || y < m_main_canvas->coordinateSystem()->bottom()) {
-    m_mouse_x_position_widget->setContentText("--");
+    m_mouse_y_position_widget->setContentText("--");
   }
 
   else {
-    m_mouse_y_position_widget->setContentText(QString::number(y));
+    m_mouse_y_position_widget->setContentText(QString::number(y, 'f', 2));
   }
+}
+
+void MainWindow::updateZoomStatusbar(double zoom) {
+  double x = zoom * 100.0;
+  m_zoom_widget->setContentText(QString(QString::number(x, 'f', 2) + "%"));
 }
 
 void MainWindow::createCanvas() {

@@ -47,6 +47,8 @@ protected:
   void drawElement(GraphicElement &element, bool recalculate_vertices = false);
   void drawPrimitive(DrawPrimitive &primitive, bool selected);
 
+  void drawPaintArea();
+
   virtual void initializeGL(); //!< initialize context
   virtual void paintGL(); //!< called when the widget needs to be redrawn
   virtual void resizeGL(int width, int height); //!< called when the widget is resized
@@ -85,15 +87,18 @@ private:
   bool m_has_to_recalculate_elements_vertices;
 
   QColor m_background_color;
+  QColor m_off_limits_background_color;
   QTimer *m_timer;
 
   QGLShaderProgram m_shader_program;
 
 signals:
   void mouseMoved(double x_world, double y_world);
+  void zoomUpdated(double zoom);
 
 private slots:
   void emitMouseMoveSignal();
+  void emitZoomUpdateSignal();
 };
 
 #endif

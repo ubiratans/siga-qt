@@ -2,6 +2,20 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
+    <name>MainCanvasToolDialog</name>
+    <message>
+        <location filename="../../canvas/forms/main_canvas_tool_dialog.ui" line="23"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../canvas/forms/main_canvas_tool_dialog.ui" line="64"/>
+        <location filename="../../canvas/forms/main_canvas_tool_dialog.ui" line="92"/>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <location filename="../../forms/main_window.ui" line="20"/>
@@ -24,7 +38,7 @@
     <message>
         <location filename="../../main_window_strings.h" line="7"/>
         <source>WINDOW_TITLE</source>
-        <translation type="unfinished"></translation>
+        <translation>FUNCEME SIGA</translation>
     </message>
     <message>
         <location filename="../../main_window_strings.h" line="10"/>
