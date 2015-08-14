@@ -1,13 +1,14 @@
 # SIGA QT - MAIN CMAKE FILE
 
 # Specify cmake version compatibility that will be used
-cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.0.2 FATAL_ERROR)
 
 # Set project and it's name
 set(PROJECT_NAME "siga")
 project(${PROJECT_NAME})
 
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 if(NOT DEFINED m64)
     message(FATAL_ERROR "ERROR: System architeture is mandatory! Use -Dm64=TRUE/FALSE")

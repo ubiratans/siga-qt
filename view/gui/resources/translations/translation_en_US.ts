@@ -5,12 +5,15 @@
     <name>MainCanvasToolDialog</name>
     <message>
         <location filename="../../canvas/forms/main_canvas_tool_dialog.ui" line="23"/>
+        <location filename="../../canvas/main_canvas_tool_dialog_ui.h" line="185"/>
         <source>Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../canvas/forms/main_canvas_tool_dialog.ui" line="64"/>
         <location filename="../../canvas/forms/main_canvas_tool_dialog.ui" line="92"/>
+        <location filename="../../canvas/main_canvas_tool_dialog_ui.h" line="191"/>
+        <location filename="../../canvas/main_canvas_tool_dialog_ui.h" line="195"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>

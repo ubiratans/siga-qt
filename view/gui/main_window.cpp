@@ -57,6 +57,9 @@ void MainWindow::connectEvents() {
 }
 
 void MainWindow::init() {
+  QIcon icon(":/image/app_icon.png");
+  setWindowIcon(icon);
+
   TranslationUtils::loadDefaultTranslation();
   TranslationUtils::setDefaultContext(kMainWindowStringsContext);
 
